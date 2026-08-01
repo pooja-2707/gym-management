@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout}">
+<body>
+<div id="page-content">
+
+    <div class="top-header">
+        <div>
+            <h2>Trainers</h2>
+            <span class="breadcrumb">Manage gym trainers & specializations</span>
+        </div>
+        <a th:href="@{/trainers/add}" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i> Add Trainer
+        </a>
+    </div>
+
+    <div class="content-card">
+        <div class="card-body">
+            <div th:if="${#lists.isEmpty(trainers)}" class="text-center py-4 text-muted">
+                No trainers registered yet.
+            </div>
+
+            <div th:unless="${#lists.isEmpty(trainers)}" class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>Specialization</th>
+                            <th>Salary (Monthly)</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="trainer, iterStat : ${trainers}">
+                            <td th:text="${iterStat.count}">1</td>
+                            <td class="fw-semibold" th:text="${trainer.name}">Alex Paul</td>
+                            <td th:text="${trainer.phone}">9876543210</td>
+                            <td>
+                                <span class="badge bg-primary bg-opacity-10 text-primary" th:text="${trainer.specialization}">Bodybuilding</span>
+                            </td>
+                            <td>₹<span th:text="${#numbers.formatDecimal(trainer.salary, 1, 0)}">30000</span></td>
+                            <td>
+                                <a th:href="@{/trainers/edit/{id}(id=${trainer.id})}" class="btn btn-sm btn-warning me-1">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a th:href="@{/trainers/delete/{id}(id=${trainer.id})}" class="btn btn-sm btn-danger"
+                                   onclick="return confirm('Delete this trainer?')">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

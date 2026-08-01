@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<!--
+=============================================
+MEMBER FORM PAGE (members/form.html)
+=============================================
+WHY: This SINGLE form handles BOTH:
+- Adding a new member (when member.id is null)
+- Editing an existing member (when member.id has a value)
+
+HOW:
+- For ADD: Controller sends new Member() → form fields are empty
+- For EDIT: Controller sends existingMember → form fields are pre-filled
+
+THYMELEAF FORM CONCEPTS:
+- th:object → Binds the form to a Java object
+- th:field  → Binds each input to a field of that object
+- th:errors → Displays validation error messages
+-->
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout}">
+<body>
+<div id="page-content">
+
+    <!-- Page Header -->
+    <div class="top-header">
+        <div>
+            <!--
+            Conditional title:
+            If member.id exists → "Edit Member"
+            If member.id is null → "Add Member"
+            -->
+            <h2 th:text="${member.id != null} ? 'Edit Member' : 'Add New Member'">Add New Member</h2>
+            <span class="breadcrumb">
+                <a th:href="@{/members}" class="text-decoration-none">Members</a> / 
+                <span th:text="${member.id != null} ? 'Edit' : 'Add'">Add</span>
+            </span>
+        </div>
+    </div>
+
+    <div class="content-card">
+        <div class="card-body">
+            <!--
+            ═══════════════════════════════════════
+            THYMELEAF FORM BINDING
+            ═══════════════════════════════════════
+            
+            th:action="@{/members/save}"
+            → Form data is sent to POST /members/save
+            
+            th:object="${member}"
+            → Binds this form to the "member" object from the Controller.
+            All th:field="*{fieldName}" inside this form refer to this object.
+            
+            method="post"
+            → Uses POST method (we're SENDING data, not reading)
+            -->
+            <form th:action="@{/members/save}" th:object="${member}" method="post" novalidate>
+                
+                <!--
+                HIDDEN FIELD for ID
+                ───────────────────
+                WHY: When editing, we need to send the member's ID back to the server.
+                Without this, Spring thinks it's a NEW member (id=null) and creates a duplicate.
+                
+                th:field="*{id}" → Binds to member.getId()
+                For ADD: value="" (null → new member)
+                For EDIT: value="5" (existing member)
+                -->
+                <input type="hidden" th:field="*{id}">
+                
+                <div class="row g-3">
+                    <!-- Name -->
+                    <div class="col-md-6">
+                        <label class="form-label">Full Name <span class="text-danger">*</span></label>
+                        <!--
+                        th:field="*{name}"
+                        ──────────────────
+                        This does THREE things:
+                        1. Sets name="name" (HTML attribute)
+                        2. Sets id="name" (HTML attribute)
+                        3. Sets value="${member.name}" (pre-fills with existing data)
+                        
+                        th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''"
+                        → Adds Bootstrap's 'is-invalid' class if validation failed for 'name'
+                          This shows a red border around the input.
+                        -->
+                        <input type="text" class="form-control" th:field="*{name}"
+                               th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''"
+                               placeholder="Enter full name">
+                        <!--
+                        th:errors="*{name}"
+                        → Displays the error message from @NotBlank(message = "Name is required")
+                        Only shows if there IS an error for this field.
+                        -->
+                        <div class="invalid-feedback" th:errors="*{name}">Name error</div>
+                    </div>
+                    
+                    <!-- Phone -->
+                    <div class="col-md-6">
+                        <label class="form-label">Phone Number <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" th:field="*{phone}"
+                               th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid' : ''"
+                               placeholder="Enter phone number">
+                        <div class="invalid-feedback" th:errors="*{phone}">Phone error</div>
+                    </div>
+                    
+                    <!-- Email -->
+                    <div class="col-md-6">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" th:field="*{email}"
+                               th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''"
+                               placeholder="Enter email address">
+                        <div class="invalid-feedback" th:errors="*{email}">Email error</div>
+                    </div>
+                    
+                    <!-- Age -->
+                    <div class="col-md-3">
+                        <label class="form-label">Age <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" th:field="*{age}"
+                               th:classappend="${#fields.hasErrors('age')} ? 'is-invalid' : ''"
+                               placeholder="Age" min="10" max="100">
+                        <div class="invalid-feedback" th:errors="*{age}">Age error</div>
+                    </div>
+                    
+                    <!-- Gender -->
+                    <div class="col-md-3">
+                        <label class="form-label">Gender <span class="text-danger">*</span></label>
+                        <!--
+                        For <select> with th:field, Thymeleaf automatically selects
+                        the option that matches the current value of member.gender.
+                        -->
+                        <select class="form-select" th:field="*{gender}"
+                                th:classappend="${#fields.hasErrors('gender')} ? 'is-invalid' : ''">
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <div class="invalid-feedback" th:errors="*{gender}">Gender error</div>
+                    </div>
+                    
+                    <!-- Join Date -->
+                    <div class="col-md-6">
+                        <label class="form-label">Join Date <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" th:field="*{joinDate}"
+                               th:classappend="${#fields.hasErrors('joinDate')} ? 'is-invalid' : ''">
+                        <div class="invalid-feedback" th:errors="*{joinDate}">Join date error</div>
+                    </div>
+                    
+                    <!-- Address -->
+                    <div class="col-md-6">
+                        <label class="form-label">Address</label>
+                        <textarea class="form-control" th:field="*{address}" rows="3"
+                                  placeholder="Enter address (optional)"></textarea>
+                    </div>
+                </div>
+                
+                <!-- Form Buttons -->
+                <div class="mt-4 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-lg me-1"></i>
+                        <span th:text="${member.id != null} ? 'Update Member' : 'Save Member'">Save Member</span>
+                    </button>
+                    <a th:href="@{/members}" class="btn btn-secondary">
+                        <i class="bi bi-x-lg me-1"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout}">
+<body>
+<div id="page-content">
+
+    <div class="top-header">
+        <div>
+            <h2>Daily Attendance</h2>
+            <span class="breadcrumb">Mark & filter member attendance</span>
+        </div>
+        <a th:href="@{/attendance/add}" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i> Mark Attendance
+        </a>
+    </div>
+
+    <!-- Filter Form -->
+    <div class="content-card mb-4 p-3">
+        <form th:action="@{/attendance}" method="get" class="row g-2 align-items-center">
+            <div class="col-auto">
+                <label class="col-form-label fw-semibold">Filter by Date:</label>
+            </div>
+            <div class="col-auto">
+                <input type="date" name="date" class="form-control form-control-sm" th:value="${filterDate}">
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-sm btn-primary">Filter</button>
+                <a th:href="@{/attendance}" class="btn btn-sm btn-outline-secondary" th:if="${filterDate != null || filterMemberId != null}">Reset</a>
+            </div>
+        </form>
+    </div>
+
+    <div class="content-card">
+        <div class="card-body">
+            <div th:if="${#lists.isEmpty(attendanceList)}" class="text-center py-4 text-muted">
+                No attendance records found for this criteria.
+            </div>
+
+            <div th:unless="${#lists.isEmpty(attendanceList)}" class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Member</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="att, iterStat : ${attendanceList}">
+                            <td th:text="${iterStat.count}">1</td>
+                            <td th:text="${att.member != null ? att.member.name : 'N/A'}">John Doe</td>
+                            <td th:text="${#temporals.format(att.date, 'dd-MMM-yyyy')}">01-Jan-2026</td>
+                            <td>
+                                <span class="badge"
+                                      th:classappend="${att.status == 'Present'} ? 'bg-success' : 'bg-danger'"
+                                      th:text="${att.status}">Present</span>
+                            </td>
+                            <td>
+                                <a th:href="@{/attendance/delete/{id}(id=${att.id})}" class="btn btn-sm btn-danger"
+                                   onclick="return confirm('Delete this attendance record?')">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout}">
+<body>
+<div id="page-content">
+
+    <div class="top-header">
+        <div>
+            <h2>Business Reports</h2>
+            <span class="breadcrumb">Generate revenue and subscription analytics</span>
+        </div>
+    </div>
+
+    <!-- Date Range Filter -->
+    <div class="content-card mb-4 p-3">
+        <form th:action="@{/reports}" method="get" class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label small fw-semibold">Start Date</label>
+                <input type="date" name="startDate" class="form-control form-control-sm" th:value="${startDate}">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label small fw-semibold">End Date</label>
+                <input type="date" name="endDate" class="form-control form-control-sm" th:value="${endDate}">
+            </div>
+            <div class="col-md-4 d-flex gap-2">
+                <button type="submit" class="btn btn-sm btn-primary flex-grow-1"><i class="bi bi-funnel me-1"></i> Filter Report</button>
+                <a th:href="@{/reports}" class="btn btn-sm btn-outline-secondary">Reset</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <ul class="nav nav-tabs mb-4" id="reportTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="revenue-tab" data-bs-toggle="tab" data-bs-target="#revenue" type="button" role="tab">Revenue History</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="active-tab" data-bs-toggle="tab" data-bs-target="#active" type="button" role="tab">Active Members</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="expired-tab" data-bs-toggle="tab" data-bs-target="#expired" type="button" role="tab">Expired Members</button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="reportTabsContent">
+        <!-- Revenue Tab -->
+        <div class="tab-pane fade show active" id="revenue" role="tabpanel">
+            <div class="content-card">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">Payments Received (<span th:text="${#temporals.format(startDate, 'dd-MMM-yyyy')}"></span> to <span th:text="${#temporals.format(endDate, 'dd-MMM-yyyy')}"></span>)</h5>
+                    <div th:if="${#lists.isEmpty(payments)}" class="text-muted py-3 text-center">No payment records in selected range.</div>
+                    <div th:unless="${#lists.isEmpty(payments)}" class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Member</th>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th>Mode</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="p, stat : ${payments}">
+                                    <td th:text="${stat.count}">1</td>
+                                    <td th:text="${p.member != null ? p.member.name : 'N/A'}">John</td>
+                                    <td th:text="${#temporals.format(p.paymentDate, 'dd-MMM-yyyy')}">Date</td>
+                                    <td class="fw-bold text-success">₹<span th:text="${#numbers.formatDecimal(p.amount, 1, 0)}">1000</span></td>
+                                    <td th:text="${p.paymentMode}">Cash</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Members Tab -->
+        <div class="tab-pane fade" id="active" role="tabpanel">
+            <div class="content-card">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">Active Subscriptions</h5>
+                    <div th:if="${#lists.isEmpty(activeSubscriptions)}" class="text-muted py-3 text-center">No active subscriptions.</div>
+                    <div th:unless="${#lists.isEmpty(activeSubscriptions)}" class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Member</th>
+                                    <th>Plan</th>
+                                    <th>Expiry Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="sub, stat : ${activeSubscriptions}">
+                                    <td th:text="${stat.count}">1</td>
+                                    <td th:text="${sub.member != null ? sub.member.name : 'N/A'}">John</td>
+                                    <td th:text="${sub.plan != null ? sub.plan.planName : 'N/A'}">Plan</td>
+                                    <td th:text="${#temporals.format(sub.endDate, 'dd-MMM-yyyy')}">Date</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Expired Members Tab -->
+        <div class="tab-pane fade" id="expired" role="tabpanel">
+            <div class="content-card">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">Expired Subscriptions</h5>
+                    <div th:if="${#lists.isEmpty(expiredSubscriptions)}" class="text-muted py-3 text-center">No expired subscriptions.</div>
+                    <div th:unless="${#lists.isEmpty(expiredSubscriptions)}" class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Member</th>
+                                    <th>Plan</th>
+                                    <th>Expired On</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="sub, stat : ${expiredSubscriptions}">
+                                    <td th:text="${stat.count}">1</td>
+                                    <td th:text="${sub.member != null ? sub.member.name : 'N/A'}">John</td>
+                                    <td th:text="${sub.plan != null ? sub.plan.planName : 'N/A'}">Plan</td>
+                                    <td th:text="${#temporals.format(sub.endDate, 'dd-MMM-yyyy')}">Date</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

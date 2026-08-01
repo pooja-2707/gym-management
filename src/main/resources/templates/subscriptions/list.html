@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout}">
+<body>
+<div id="page-content">
+
+    <div class="top-header">
+        <div>
+            <h2>Subscriptions</h2>
+            <span class="breadcrumb">Assign & track member plans</span>
+        </div>
+        <a th:href="@{/subscriptions/add}" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i> Assign Subscription
+        </a>
+    </div>
+
+    <!-- Filter Pills -->
+    <div class="mb-4 d-flex gap-2">
+        <a th:href="@{/subscriptions}" class="btn btn-sm" th:classappend="${filterStatus == null} ? 'btn-primary' : 'btn-outline-secondary'">All</a>
+        <a th:href="@{/subscriptions(status='Active')}" class="btn btn-sm" th:classappend="${filterStatus == 'Active'} ? 'btn-success' : 'btn-outline-success'">Active</a>
+        <a th:href="@{/subscriptions(status='Expired')}" class="btn btn-sm" th:classappend="${filterStatus == 'Expired'} ? 'btn-danger' : 'btn-outline-danger'">Expired</a>
+    </div>
+
+    <div class="content-card">
+        <div class="card-body">
+            <div th:if="${#lists.isEmpty(subscriptions)}" class="text-center py-4 text-muted">
+                No subscriptions found.
+            </div>
+
+            <div th:unless="${#lists.isEmpty(subscriptions)}" class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Member</th>
+                            <th>Plan</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="sub, iterStat : ${subscriptions}">
+                            <td th:text="${iterStat.count}">1</td>
+                            <td th:text="${sub.member != null ? sub.member.name : 'N/A'}">John Doe</td>
+                            <td th:text="${sub.plan != null ? sub.plan.planName : 'N/A'}">Monthly</td>
+                            <td th:text="${#temporals.format(sub.startDate, 'dd-MMM-yyyy')}">01-Jan-2026</td>
+                            <td th:text="${#temporals.format(sub.endDate, 'dd-MMM-yyyy')}">01-Feb-2026</td>
+                            <td>
+                                <span class="badge"
+                                      th:classappend="${sub.status == 'Active'} ? 'bg-success' : 'bg-danger'"
+                                      th:text="${sub.status}">Active</span>
+                            </td>
+                            <td>
+                                <a th:href="@{/subscriptions/edit/{id}(id=${sub.id})}" class="btn btn-sm btn-warning me-1">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a th:href="@{/subscriptions/delete/{id}(id=${sub.id})}" class="btn btn-sm btn-danger"
+                                   onclick="return confirm('Delete this subscription?')">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

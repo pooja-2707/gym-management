@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout}">
+<body>
+<div id="page-content">
+
+    <div class="top-header">
+        <div>
+            <h2>Dashboard</h2>
+            <span class="breadcrumb">Welcome to GymPro Management System</span>
+        </div>
+    </div>
+
+    <!-- Stat Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-xl-3 col-md-6 col-12">
+            <div class="stat-card">
+                <div class="stat-icon bg-primary">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+                <div class="stat-value" th:text="${totalMembers}">0</div>
+                <div class="stat-label">Total Members</div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 col-12">
+            <div class="stat-card">
+                <div class="stat-icon bg-success">
+                    <i class="bi bi-person-check-fill"></i>
+                </div>
+                <div class="stat-value" th:text="${activeMembers}">0</div>
+                <div class="stat-label">Active Members</div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 col-12">
+            <div class="stat-card">
+                <div class="stat-icon bg-danger">
+                    <i class="bi bi-person-x-fill"></i>
+                </div>
+                <div class="stat-value" th:text="${expiredMembers}">0</div>
+                <div class="stat-label">Expired Members</div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 col-12">
+            <div class="stat-card">
+                <div class="stat-icon bg-info">
+                    <i class="bi bi-currency-rupee"></i>
+                </div>
+                <div class="stat-value">₹<span th:text="${#numbers.formatDecimal(monthlyRevenue ?: 0, 1, 0)}">0</span></div>
+                <div class="stat-label">Monthly Revenue</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Tables -->
+    <div class="row g-4">
+        <!-- Recent Members -->
+        <div class="col-lg-6">
+            <div class="content-card">
+                <div class="card-header">
+                    <h5><i class="bi bi-clock-history me-2"></i>Recent Members</h5>
+                    <a th:href="@{/members}" class="btn btn-sm btn-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    <div th:if="${#lists.isEmpty(recentMembers)}" class="text-muted text-center py-3">
+                        No members added yet.
+                    </div>
+                    <div th:unless="${#lists.isEmpty(recentMembers)}" class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Phone</th>
+                                    <th>Joined</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="m : ${recentMembers}">
+                                    <td class="fw-semibold" th:text="${m.name}">John</td>
+                                    <td th:text="${m.phone}">9876543210</td>
+                                    <td th:text="${#temporals.format(m.joinDate, 'dd-MMM-yyyy')}">Date</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Payments -->
+        <div class="col-lg-6">
+            <div class="content-card">
+                <div class="card-header">
+                    <h5><i class="bi bi-receipt me-2"></i>Recent Payments</h5>
+                    <a th:href="@{/payments}" class="btn btn-sm btn-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    <div th:if="${#lists.isEmpty(recentPayments)}" class="text-muted text-center py-3">
+                        No payments recorded yet.
+                    </div>
+                    <div th:unless="${#lists.isEmpty(recentPayments)}" class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Member</th>
+                                    <th>Amount</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="p : ${recentPayments}">
+                                    <td th:text="${p.member != null ? p.member.name : 'N/A'}">John</td>
+                                    <td class="text-success fw-bold">₹<span th:text="${#numbers.formatDecimal(p.amount, 1, 0)}">1000</span></td>
+                                    <td th:text="${#temporals.format(p.paymentDate, 'dd-MMM-yyyy')}">Date</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

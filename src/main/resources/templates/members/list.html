@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<!--
+=============================================
+MEMBER LIST PAGE (members/list.html)
+=============================================
+WHY: Shows all members in a table with:
+- Search bar to filter by name or phone
+- "Add Member" button
+- Action buttons (View, Edit, Delete) for each member
+
+THYMELEAF CONCEPTS USED:
+- th:each → Loop through a list (like for-each in Java)
+- th:text → Display a variable's value
+- th:href → Dynamic link generation
+- th:if / th:unless → Conditional rendering
+-->
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout}">
+<body>
+<div id="page-content">
+
+    <!-- Page Header with Search and Add Button -->
+    <div class="top-header">
+        <div>
+            <h2>Members</h2>
+            <span class="breadcrumb">Manage all gym members</span>
+        </div>
+    </div>
+
+    <!-- Action Bar: Search + Add Button -->
+    <div class="page-actions">
+        <!-- Search Form -->
+        <!--
+        th:action="@{/members/search}"
+        → When the form is submitted, it sends data to /members/search
+        
+        method="get"
+        → Sends data as URL parameters: /members/search?keyword=Rahul
+        -->
+        <form th:action="@{/members/search}" method="get" class="d-flex gap-2" style="max-width: 400px;">
+            <div class="search-box flex-grow-1">
+                <i class="bi bi-search"></i>
+                <input type="text" name="keyword" class="form-control" 
+                       placeholder="Search by name or phone..."
+                       th:value="${keyword}">
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-search"></i>
+            </button>
+            <!--
+            th:if="${keyword}"
+            → Only shows the "Clear" button if a search is active
+            -->
+            <a th:if="${keyword}" th:href="@{/members}" class="btn btn-secondary">
+                <i class="bi bi-x-lg"></i>
+            </a>
+        </form>
+
+        <!-- Add Member Button -->
+        <a th:href="@{/members/add}" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i> Add Member
+        </a>
+    </div>
+
+    <!-- Members Table -->
+    <div class="content-card">
+        <div class="card-body">
+            <!--
+            th:if="${#lists.isEmpty(members)}"
+            → Shows this message ONLY if the members list is empty.
+            #lists is a Thymeleaf utility object for working with lists.
+            -->
+            <div th:if="${#lists.isEmpty(members)}" class="text-center py-5">
+                <i class="bi bi-people text-muted" style="font-size: 3rem;"></i>
+                <p class="text-muted mt-3">No members found.</p>
+                <a th:href="@{/members/add}" class="btn btn-primary mt-2">
+                    <i class="bi bi-plus-lg me-1"></i> Add First Member
+                </a>
+            </div>
+
+            <!--
+            th:unless="${#lists.isEmpty(members)}"
+            → Shows the table ONLY if members list is NOT empty.
+            th:unless is the opposite of th:if.
+            -->
+            <div th:unless="${#lists.isEmpty(members)}" class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th>Age</th>
+                            <th>Gender</th>
+                            <th>Join Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!--
+                        th:each="member, iterStat : ${members}"
+                        ────────────────────────────────────────
+                        This is Thymeleaf's for-each loop.
+                        
+                        member → The current Member object in each iteration
+                        iterStat → Loop status object with:
+                          - iterStat.count → Current iteration number (1, 2, 3...)
+                          - iterStat.index → Current index (0, 1, 2...)
+                          - iterStat.first → true if first iteration
+                          - iterStat.last  → true if last iteration
+                        
+                        ${members} → The list we added in the Controller:
+                          model.addAttribute("members", memberService.getAllMembers());
+                        -->
+                        <tr th:each="member, iterStat : ${members}">
+                            <td th:text="${iterStat.count}">1</td>
+                            
+                            <!--
+                            th:text="${member.name}"
+                            → Calls member.getName() and displays the result.
+                            Thymeleaf converts "member.name" to "member.getName()"
+                            -->
+                            <td th:text="${member.name}">John Doe</td>
+                            <td th:text="${member.phone}">9876543210</td>
+                            <td th:text="${member.email ?: 'N/A'}">email@example.com</td>
+                            <td th:text="${member.age}">25</td>
+                            <td>
+                                <!--
+                                Badge color based on gender:
+                                th:classappend → Adds CSS class conditionally
+                                -->
+                                <span class="badge" 
+                                      th:classappend="${member.gender == 'Male'} ? 'bg-primary' : (${member.gender == 'Female'} ? 'bg-danger' : 'bg-secondary')"
+                                      th:text="${member.gender}">Male</span>
+                            </td>
+                            <!--
+                            #temporals.format(member.joinDate, 'dd-MMM-yyyy')
+                            → Formats the date. Example: 2026-07-26 → 26-Jul-2026
+                            #temporals is Thymeleaf's date formatting utility.
+                            -->
+                            <td th:text="${#temporals.format(member.joinDate, 'dd-MMM-yyyy')}">01-Jan-2026</td>
+                            <td>
+                                <!--
+                                th:href="@{/members/view/{id}(id=${member.id})}"
+                                → Generates URL with the member's ID.
+                                Example: /members/view/5
+                                
+                                The (id=${member.id}) part replaces {id} in the URL template.
+                                -->
+                                <a th:href="@{/members/view/{id}(id=${member.id})}" 
+                                   class="btn btn-sm btn-info text-white me-1" title="View">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a th:href="@{/members/edit/{id}(id=${member.id})}" 
+                                   class="btn btn-sm btn-warning me-1" title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a th:href="@{/members/delete/{id}(id=${member.id})}" 
+                                   class="btn btn-sm btn-danger" title="Delete"
+                                   onclick="return confirm('Are you sure you want to delete this member?')">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Total count -->
+            <div th:unless="${#lists.isEmpty(members)}" class="text-muted mt-3 px-2">
+                <small>
+                    Showing <strong th:text="${#lists.size(members)}">0</strong> member(s)
+                    <span th:if="${keyword}"> for "<strong th:text="${keyword}">search</strong>"</span>
+                </small>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

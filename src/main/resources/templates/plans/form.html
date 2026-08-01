@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout}">
+<body>
+<div id="page-content">
+
+    <div class="top-header">
+        <div>
+            <h2 th:text="${plan.id != null} ? 'Edit Plan' : 'Add Membership Plan'">Add Plan</h2>
+            <span class="breadcrumb"><a th:href="@{/plans}" class="text-decoration-none">Plans</a> / Form</span>
+        </div>
+    </div>
+
+    <div class="content-card" style="max-width: 600px;">
+        <div class="card-body">
+            <form th:action="@{/plans/save}" th:object="${plan}" method="post">
+                <input type="hidden" th:field="*{id}">
+
+                <div class="mb-3">
+                    <label class="form-label">Plan Name <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" th:field="*{planName}"
+                           th:classappend="${#fields.hasErrors('planName')} ? 'is-invalid' : ''" placeholder="e.g. Quarterly Plan">
+                    <div class="invalid-feedback" th:errors="*{planName}">Error</div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Duration (in Months) <span class="text-danger">*</span></label>
+                    <input type="number" class="form-control" th:field="*{durationInMonths}"
+                           th:classappend="${#fields.hasErrors('durationInMonths')} ? 'is-invalid' : ''" min="1" max="24" placeholder="1 to 24">
+                    <div class="invalid-feedback" th:errors="*{durationInMonths}">Error</div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Price (₹) <span class="text-danger">*</span></label>
+                    <input type="number" step="0.01" class="form-control" th:field="*{price}"
+                           th:classappend="${#fields.hasErrors('price')} ? 'is-invalid' : ''" placeholder="e.g. 2500">
+                    <div class="invalid-feedback" th:errors="*{price}">Error</div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i> Save Plan</button>
+                    <a th:href="@{/plans}" class="btn btn-secondary"><i class="bi bi-x-lg me-1"></i> Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
