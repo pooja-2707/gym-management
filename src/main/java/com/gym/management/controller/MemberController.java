@@ -97,7 +97,7 @@ public class MemberController {
      * 
      * The same form.html works for both Add and Edit!
      */
-    @GetMapping("/add")
+    @GetMapping({"/add", "/new"})
     public String showAddForm(Model model) {
         model.addAttribute("member", new Member());
         model.addAttribute("pageTitle", "Add Member");

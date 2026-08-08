@@ -32,4 +32,8 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
     // Monthly revenue for chart - get revenue per month for current year
     @Query("SELECT MONTH(p.paymentDate), COALESCE(SUM(p.amount), 0) FROM Payment p WHERE YEAR(p.paymentDate) = :year GROUP BY MONTH(p.paymentDate) ORDER BY MONTH(p.paymentDate)")
     List<Object[]> getMonthlyRevenueByYear(@Param("year") int year);
+
+    // Sum revenue between start and end dates
+    @Query("SELECT COALESCE(SUM(p.amount), 0) FROM Payment p WHERE p.paymentDate BETWEEN :startDate AND :endDate")
+    Double getRevenueBetweenDates(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 }

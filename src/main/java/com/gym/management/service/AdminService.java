@@ -19,6 +19,9 @@ public class AdminService implements UserDetailsService {
     @Autowired
     private AdminRepository adminRepository;
 
+    @Autowired
+    private org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
+
     /*
      * Spring Security calls this method during login.
      * It fetches the admin from DB and wraps it in a UserDetails object.
@@ -33,5 +36,21 @@ public class AdminService implements UserDetailsService {
                 admin.getPassword(),
                 Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"))
         );
+    }
+
+    public void registerAdmin(String username, String email, String password) {
+        if (adminRepository.existsByUsername(username)) {
+            throw new IllegalArgumentException("Username is already taken!");
+        }
+        if (email != null && !email.trim().isEmpty() && adminRepository.existsByEmail(email)) {
+            throw new IllegalArgumentException("Email is already registered!");
+        }
+
+        Admin admin = new Admin();
+        admin.setUsername(username.trim());
+        admin.setEmail(email != null ? email.trim() : null);
+        admin.setPassword(passwordEncoder.encode(password));
+
+        adminRepository.save(admin);
     }
 }

@@ -56,4 +56,17 @@ public class PaymentService {
     public List<Object[]> getMonthlyRevenueData() {
         return paymentRepository.getMonthlyRevenueByYear(LocalDate.now().getYear());
     }
+
+    // Get weekly revenue for the last 6 weeks (W1 to W6)
+    public List<Double> getWeeklyRevenueLast6Weeks() {
+        List<Double> weeklyRevenues = new java.util.ArrayList<>();
+        LocalDate today = LocalDate.now();
+        for (int i = 5; i >= 0; i--) {
+            LocalDate start = today.minusDays((i + 1) * 7L - 1);
+            LocalDate end = today.minusDays(i * 7L);
+            Double rev = paymentRepository.getRevenueBetweenDates(start, end);
+            weeklyRevenues.add(rev != null ? rev : 0.0);
+        }
+        return weeklyRevenues;
+    }
 }

@@ -33,6 +33,11 @@ public class DashboardController {
         model.addAttribute("recentMembers", memberService.getRecentMembers());
         model.addAttribute("recentPayments", paymentService.getRecentPayments());
 
+        java.util.List<Double> weeklyRevenue = paymentService.getWeeklyRevenueLast6Weeks();
+        double maxWeeklyRevenue = weeklyRevenue.stream().mapToDouble(Double::doubleValue).max().orElse(0.0);
+        model.addAttribute("weeklyRevenue", weeklyRevenue);
+        model.addAttribute("maxWeeklyRevenue", maxWeeklyRevenue);
+
         return "dashboard";
     }
 }

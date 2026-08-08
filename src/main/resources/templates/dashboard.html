@@ -3,124 +3,95 @@
 <body>
 <div id="page-content">
 
-    <div class="top-header">
-        <div>
-            <h2>Dashboard</h2>
-            <span class="breadcrumb">Welcome to GymPro Management System</span>
+  <div class="page-head">
+    <div class="eyebrow">Front desk overview</div>
+    <h1>Dashboard</h1>
+  </div>
+
+  <div class="plates">
+    <div class="plate-card">
+      <div class="plate red"><span>45kg</span></div>
+      <div>
+        <div class="num" th:text="${totalMembers}">0</div>
+        <div class="label">Total Members</div>
+      </div>
+    </div>
+    <div class="plate-card">
+      <div class="plate blue"><span>20kg</span></div>
+      <div>
+        <div class="num" th:text="${activeMembers}">0</div>
+        <div class="label">Active Members</div>
+      </div>
+    </div>
+    <div class="plate-card">
+      <div class="plate yellow"><span>10kg</span></div>
+      <div>
+        <div class="num" th:text="${expiredMembers}">0</div>
+        <div class="label">Expired Members</div>
+      </div>
+    </div>
+    <div class="plate-card hero">
+      <div class="plate green"><span>5kg</span></div>
+      <div>
+        <div class="num">₹<span th:text="${#numbers.formatDecimal(monthlyRevenue ?: 0, 1, 0)}">0</span></div>
+        <div class="label">Monthly Revenue</div>
+      </div>
+      <div class="trend">— flat</div>
+    </div>
+  </div>
+
+  <div class="panels">
+    <!-- Revenue Bar Chart -->
+    <div class="panel">
+      <div class="panel-head">
+        <h2>📈 Revenue, last 6 weeks</h2>
+        <a th:href="@{/reports}">View report →</a>
+      </div>
+      <div class="panel-body">
+        <div class="chart-row">
+          <div th:each="rev, iterStat : ${weeklyRevenue}" 
+               class="bar" 
+               th:style="'height:' + (${maxWeeklyRevenue > 0 ? (rev / maxWeeklyRevenue * 80 + 10) : 6} + '%')"
+               th:title="'W' + ${iterStat.count} + ': ₹' + ${#numbers.formatDecimal(rev, 1, 0)}">
+            <span th:text="'W' + ${iterStat.count}">W1</span>
+          </div>
         </div>
+      </div>
     </div>
 
-    <!-- Stat Cards -->
-    <div class="row g-4 mb-4">
-        <div class="col-xl-3 col-md-6 col-12">
-            <div class="stat-card">
-                <div class="stat-icon bg-primary">
-                    <i class="bi bi-people-fill"></i>
-                </div>
-                <div class="stat-value" th:text="${totalMembers}">0</div>
-                <div class="stat-label">Total Members</div>
-            </div>
+    <!-- Recent Members -->
+    <div class="panel">
+      <div class="panel-head">
+        <h2>Recent Members</h2>
+        <a th:href="@{/members}">View all →</a>
+      </div>
+      <div class="panel-body">
+        <div th:if="${#lists.isEmpty(recentMembers)}" class="empty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          <p>No members yet — the roster's empty.</p>
+          <a th:href="@{/members/add}" class="btn-add">+ Add first member</a>
         </div>
-
-        <div class="col-xl-3 col-md-6 col-12">
-            <div class="stat-card">
-                <div class="stat-icon bg-success">
-                    <i class="bi bi-person-check-fill"></i>
-                </div>
-                <div class="stat-value" th:text="${activeMembers}">0</div>
-                <div class="stat-label">Active Members</div>
-            </div>
+        <div th:unless="${#lists.isEmpty(recentMembers)}" class="table-responsive">
+          <table class="table-board">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Joined</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="m : ${recentMembers}">
+                <td style="font-weight: 600;" th:text="${m.name}">John Doe</td>
+                <td style="font-family: 'JetBrains Mono', monospace;" th:text="${m.phone}">9876543210</td>
+                <td style="font-family: 'JetBrains Mono', monospace;" th:text="${#temporals.format(m.joinDate, 'dd-MMM-yyyy')}">01-Jan-2026</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-
-        <div class="col-xl-3 col-md-6 col-12">
-            <div class="stat-card">
-                <div class="stat-icon bg-danger">
-                    <i class="bi bi-person-x-fill"></i>
-                </div>
-                <div class="stat-value" th:text="${expiredMembers}">0</div>
-                <div class="stat-label">Expired Members</div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6 col-12">
-            <div class="stat-card">
-                <div class="stat-icon bg-info">
-                    <i class="bi bi-currency-rupee"></i>
-                </div>
-                <div class="stat-value">₹<span th:text="${#numbers.formatDecimal(monthlyRevenue ?: 0, 1, 0)}">0</span></div>
-                <div class="stat-label">Monthly Revenue</div>
-            </div>
-        </div>
+      </div>
     </div>
-
-    <!-- Recent Tables -->
-    <div class="row g-4">
-        <!-- Recent Members -->
-        <div class="col-lg-6">
-            <div class="content-card">
-                <div class="card-header">
-                    <h5><i class="bi bi-clock-history me-2"></i>Recent Members</h5>
-                    <a th:href="@{/members}" class="btn btn-sm btn-primary">View All</a>
-                </div>
-                <div class="card-body">
-                    <div th:if="${#lists.isEmpty(recentMembers)}" class="text-muted text-center py-3">
-                        No members added yet.
-                    </div>
-                    <div th:unless="${#lists.isEmpty(recentMembers)}" class="table-responsive">
-                        <table class="table table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Phone</th>
-                                    <th>Joined</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:each="m : ${recentMembers}">
-                                    <td class="fw-semibold" th:text="${m.name}">John</td>
-                                    <td th:text="${m.phone}">9876543210</td>
-                                    <td th:text="${#temporals.format(m.joinDate, 'dd-MMM-yyyy')}">Date</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Recent Payments -->
-        <div class="col-lg-6">
-            <div class="content-card">
-                <div class="card-header">
-                    <h5><i class="bi bi-receipt me-2"></i>Recent Payments</h5>
-                    <a th:href="@{/payments}" class="btn btn-sm btn-primary">View All</a>
-                </div>
-                <div class="card-body">
-                    <div th:if="${#lists.isEmpty(recentPayments)}" class="text-muted text-center py-3">
-                        No payments recorded yet.
-                    </div>
-                    <div th:unless="${#lists.isEmpty(recentPayments)}" class="table-responsive">
-                        <table class="table table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Member</th>
-                                    <th>Amount</th>
-                                    <th>Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:each="p : ${recentPayments}">
-                                    <td th:text="${p.member != null ? p.member.name : 'N/A'}">John</td>
-                                    <td class="text-success fw-bold">₹<span th:text="${#numbers.formatDecimal(p.amount, 1, 0)}">1000</span></td>
-                                    <td th:text="${#temporals.format(p.paymentDate, 'dd-MMM-yyyy')}">Date</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+  </div>
 
 </div>
 </body>

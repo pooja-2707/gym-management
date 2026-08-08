@@ -33,7 +33,7 @@ public class PaymentController {
         return "payments/list";
     }
 
-    @GetMapping("/add")
+    @GetMapping({"/add", "/new"})
     public String showAddForm(Model model) {
         model.addAttribute("payment", new Payment());
         model.addAttribute("members", memberService.getAllMembers());
