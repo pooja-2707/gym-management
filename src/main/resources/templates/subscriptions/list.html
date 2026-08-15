@@ -2,71 +2,87 @@
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout}">
 <body>
 <div id="page-content">
-
-    <div class="top-header">
+    <!-- Page Title + Actions -->
+    <div class="flex justify-between items-end mb-8">
         <div>
-            <h2>Subscriptions</h2>
-            <span class="breadcrumb">Assign & track member plans</span>
+            <h2 class="font-headline-xl text-headline-xl text-primary">Subscriptions</h2>
+            <p class="font-body-md text-body-md text-on-surface-variant mt-1">Assign &amp; track member plan subscriptions.</p>
         </div>
-        <a th:href="@{/subscriptions/add}" class="btn btn-primary">
-            <i class="bi bi-plus-lg me-1"></i> Assign Subscription
+        <a th:href="@{/subscriptions/add}" class="btn-primary-neon no-underline">
+            <span class="material-symbols-outlined text-[18px]">add</span>
+            Assign Subscription
         </a>
     </div>
 
     <!-- Filter Pills -->
-    <div class="mb-4 d-flex gap-2">
-        <a th:href="@{/subscriptions}" class="btn btn-sm" th:classappend="${filterStatus == null} ? 'btn-primary' : 'btn-outline-secondary'">All</a>
-        <a th:href="@{/subscriptions(status='Active')}" class="btn btn-sm" th:classappend="${filterStatus == 'Active'} ? 'btn-success' : 'btn-outline-success'">Active</a>
-        <a th:href="@{/subscriptions(status='Expired')}" class="btn btn-sm" th:classappend="${filterStatus == 'Expired'} ? 'btn-danger' : 'btn-outline-danger'">Expired</a>
+    <div class="flex gap-2 mb-gutter">
+        <a th:href="@{/subscriptions}" class="no-underline px-6 py-2 rounded-full font-label-md text-label-md transition-all border"
+           th:classappend="${filterStatus == null} ? 'bg-white/10 text-primary-fixed border-primary-fixed/30' : 'glass-panel text-on-surface-variant hover:text-primary-fixed border-white/10'">
+            All
+        </a>
+        <a th:href="@{/subscriptions(status='Active')}" class="no-underline px-6 py-2 rounded-full font-label-md text-label-md transition-all border"
+           th:classappend="${filterStatus == 'Active'} ? 'bg-primary-fixed/10 text-primary-fixed border-primary-fixed/30' : 'glass-panel text-on-surface-variant hover:text-primary-fixed border-white/10'">
+            <span class="inline-flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full bg-primary-fixed"></span>
+                Active
+            </span>
+        </a>
+        <a th:href="@{/subscriptions(status='Expired')}" class="no-underline px-6 py-2 rounded-full font-label-md text-label-md transition-all border"
+           th:classappend="${filterStatus == 'Expired'} ? 'bg-error/10 text-error border-error/30' : 'glass-panel text-on-surface-variant hover:text-error border-white/10'">
+            <span class="inline-flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full bg-error"></span>
+                Expired
+            </span>
+        </a>
     </div>
 
-    <div class="content-card">
-        <div class="card-body">
-            <div th:if="${#lists.isEmpty(subscriptions)}" class="text-center py-4 text-muted">
-                No subscriptions found.
-            </div>
+    <!-- Subscriptions Table -->
+    <div class="glass-panel rounded-xl overflow-hidden">
+        <div th:if="${#lists.isEmpty(subscriptions)}" class="text-center py-16">
+            <span class="material-symbols-outlined text-[64px] text-on-surface-variant/20 mb-4">event_repeat</span>
+            <p class="font-body-md text-on-surface-variant">No subscriptions found.</p>
+        </div>
 
-            <div th:unless="${#lists.isEmpty(subscriptions)}" class="table-responsive">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Member</th>
-                            <th>Plan</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="sub, iterStat : ${subscriptions}">
-                            <td th:text="${iterStat.count}">1</td>
-                            <td th:text="${sub.member != null ? sub.member.name : 'N/A'}">John Doe</td>
-                            <td th:text="${sub.plan != null ? sub.plan.planName : 'N/A'}">Monthly</td>
-                            <td th:text="${#temporals.format(sub.startDate, 'dd-MMM-yyyy')}">01-Jan-2026</td>
-                            <td th:text="${#temporals.format(sub.endDate, 'dd-MMM-yyyy')}">01-Feb-2026</td>
-                            <td>
-                                <span class="badge"
-                                      th:classappend="${sub.status == 'Active'} ? 'bg-success' : 'bg-danger'"
-                                      th:text="${sub.status}">Active</span>
-                            </td>
-                            <td>
-                                <a th:href="@{/subscriptions/edit/{id}(id=${sub.id})}" class="btn btn-sm btn-warning me-1">
-                                    <i class="bi bi-pencil"></i>
+        <div th:unless="${#lists.isEmpty(subscriptions)}" class="overflow-x-auto">
+            <table class="glass-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Member</th>
+                        <th>Plan</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="sub, iterStat : ${subscriptions}">
+                        <td th:text="${iterStat.count}">1</td>
+                        <td class="font-bold" th:text="${sub.member != null ? sub.member.name : 'N/A'}">John Doe</td>
+                        <td><span class="badge-info" th:text="${sub.plan != null ? sub.plan.planName : 'N/A'}">Monthly</span></td>
+                        <td class="font-label-sm uppercase" th:text="${#temporals.format(sub.startDate, 'dd-MMM-yyyy')}">01-Jan-2026</td>
+                        <td class="font-label-sm uppercase" th:text="${#temporals.format(sub.endDate, 'dd-MMM-yyyy')}">01-Feb-2026</td>
+                        <td>
+                            <span th:classappend="${sub.status == 'Active'} ? 'badge-active' : 'badge-expired'"
+                                  th:text="${sub.status}">Active</span>
+                        </td>
+                        <td>
+                            <div class="flex items-center gap-2">
+                                <a th:href="@{/subscriptions/edit/{id}(id=${sub.id})}" class="btn-ghost-neon no-underline text-[12px]" title="Edit">
+                                    <span class="material-symbols-outlined text-[16px]">edit</span>
                                 </a>
-                                <a th:href="@{/subscriptions/delete/{id}(id=${sub.id})}" class="btn btn-sm btn-danger"
+                                <a th:href="@{/subscriptions/delete/{id}(id=${sub.id})}" class="btn-danger-neon no-underline text-[12px]" title="Delete"
                                    onclick="return confirm('Delete this subscription?')">
-                                    <i class="bi bi-trash"></i>
+                                    <span class="material-symbols-outlined text-[16px]">delete</span>
                                 </a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
-
 </div>
 </body>
 </html>
