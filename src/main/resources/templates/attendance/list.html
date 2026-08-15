@@ -2,73 +2,74 @@
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout}">
 <body>
 <div id="page-content">
-
-    <div class="top-header">
+    <!-- Page Title + Actions -->
+    <div class="flex justify-between items-end mb-8">
         <div>
-            <h2>Daily Attendance</h2>
-            <span class="breadcrumb">Mark & filter member attendance</span>
+            <h2 class="font-headline-xl text-headline-xl text-primary">Attendance Tracking</h2>
+            <p class="font-body-md text-body-md text-on-surface-variant mt-1">Mark &amp; filter member daily attendance.</p>
         </div>
-        <a th:href="@{/attendance/add}" class="btn btn-primary">
-            <i class="bi bi-plus-lg me-1"></i> Mark Attendance
+        <a th:href="@{/attendance/add}" class="btn-primary-neon no-underline">
+            <span class="material-symbols-outlined text-[18px]">how_to_reg</span>
+            Mark Attendance
         </a>
     </div>
 
     <!-- Filter Form -->
-    <div class="content-card mb-4 p-3">
-        <form th:action="@{/attendance}" method="get" class="row g-2 align-items-center">
-            <div class="col-auto">
-                <label class="col-form-label fw-semibold">Filter by Date:</label>
+    <div class="glass-panel rounded-xl p-6 mb-gutter">
+        <form th:action="@{/attendance}" method="get" class="flex flex-wrap items-end gap-4">
+            <div class="min-w-[200px]">
+                <label class="glass-label">Filter by Date</label>
+                <input type="date" name="date" class="glass-input" th:value="${filterDate}">
             </div>
-            <div class="col-auto">
-                <input type="date" name="date" class="form-control form-control-sm" th:value="${filterDate}">
-            </div>
-            <div class="col-auto">
-                <button type="submit" class="btn btn-sm btn-primary">Filter</button>
-                <a th:href="@{/attendance}" class="btn btn-sm btn-outline-secondary" th:if="${filterDate != null || filterMemberId != null}">Reset</a>
+            <div class="flex gap-2">
+                <button type="submit" class="btn-primary-neon">
+                    <span class="material-symbols-outlined text-[18px]">filter_alt</span>
+                    Filter
+                </button>
+                <a th:href="@{/attendance}" class="btn-ghost-neon no-underline"
+                   th:if="${filterDate != null || filterMemberId != null}">Reset</a>
             </div>
         </form>
     </div>
 
-    <div class="content-card">
-        <div class="card-body">
-            <div th:if="${#lists.isEmpty(attendanceList)}" class="text-center py-4 text-muted">
-                No attendance records found for this criteria.
-            </div>
+    <!-- Attendance Table -->
+    <div class="glass-panel rounded-xl overflow-hidden">
+        <div th:if="${#lists.isEmpty(attendanceList)}" class="text-center py-16">
+            <span class="material-symbols-outlined text-[64px] text-on-surface-variant/20 mb-4">calendar_today</span>
+            <p class="font-body-md text-on-surface-variant">No attendance records found for this criteria.</p>
+        </div>
 
-            <div th:unless="${#lists.isEmpty(attendanceList)}" class="table-responsive">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Member</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="att, iterStat : ${attendanceList}">
-                            <td th:text="${iterStat.count}">1</td>
-                            <td th:text="${att.member != null ? att.member.name : 'N/A'}">John Doe</td>
-                            <td th:text="${#temporals.format(att.date, 'dd-MMM-yyyy')}">01-Jan-2026</td>
-                            <td>
-                                <span class="badge"
-                                      th:classappend="${att.status == 'Present'} ? 'bg-success' : 'bg-danger'"
-                                      th:text="${att.status}">Present</span>
-                            </td>
-                            <td>
-                                <a th:href="@{/attendance/delete/{id}(id=${att.id})}" class="btn btn-sm btn-danger"
-                                   onclick="return confirm('Delete this attendance record?')">
-                                    <i class="bi bi-trash"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div th:unless="${#lists.isEmpty(attendanceList)}" class="overflow-x-auto">
+            <table class="glass-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Member</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="att, iterStat : ${attendanceList}">
+                        <td th:text="${iterStat.count}">1</td>
+                        <td class="font-bold" th:text="${att.member != null ? att.member.name : 'N/A'}">John Doe</td>
+                        <td class="font-label-sm uppercase" th:text="${#temporals.format(att.date, 'dd-MMM-yyyy')}">01-Jan-2026</td>
+                        <td>
+                            <span th:classappend="${att.status == 'Present'} ? 'badge-active' : 'badge-expired'"
+                                  th:text="${att.status}">Present</span>
+                        </td>
+                        <td>
+                            <a th:href="@{/attendance/delete/{id}(id=${att.id})}" class="btn-danger-neon no-underline text-[12px]" title="Delete"
+                               onclick="return confirm('Delete this attendance record?')">
+                                <span class="material-symbols-outlined text-[16px]">delete</span>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
-
 </div>
 </body>
 </html>

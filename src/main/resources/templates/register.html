@@ -1,178 +1,116 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Account | GymPro</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Register Executive Account | GYMPRO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#0e0e0e",
+                        "surface-tint": "#abd600",
+                        "secondary": "#d3fbff",
+                        "surface": "#131313",
+                        "primary-fixed-dim": "#abd600",
+                        "on-surface": "#e5e2e1",
+                        "error-container": "#93000a",
+                        "on-surface-variant": "#c4c9ac",
+                        "secondary-fixed-dim": "#00dbe9",
+                        "outline": "#8e9379",
+                        "surface-variant": "#353534",
+                        "secondary-fixed": "#7df4ff",
+                        "on-background": "#e5e2e1",
+                        "background": "#131313",
+                        "surface-container": "#201f1f",
+                        "on-primary-fixed": "#161e00",
+                        "secondary-container": "#00eefc",
+                        "primary-container": "#c3f400",
+                        "primary-fixed": "#c3f400",
+                        "surface-dim": "#131313",
+                        "on-primary": "#283500",
+                        "outline-variant": "#444933",
+                        "surface-container-high": "#2a2a2a",
+                        "primary": "#ffffff",
+                        "surface-container-low": "#1c1b1b",
+                        "on-primary-container": "#556d00",
+                        "surface-container-highest": "#353534",
+                        "error": "#ffb4ab"
+                    },
+                    "fontFamily": { "label-md": ["Inter"], "body-md": ["Inter"], "label-sm": ["Inter"], "headline-xl": ["Inter"] },
+                    "fontSize": {
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-xl": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    },
+                    "spacing": { "margin-mobile": "16px" }
+                }
+            }
+        }
+    </script>
     <link th:href="@{/css/style.css}" rel="stylesheet">
-    <style>
-        body {
-            background: var(--board);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        .auth-card {
-            background: var(--paper);
-            border: 1px solid var(--board-line);
-            border-radius: 8px;
-            width: 100%;
-            max-width: 440px;
-            padding: 36px 32px;
-            box-shadow: 0 4px 20px rgba(32, 33, 29, 0.05);
-        }
-        .auth-brand {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 6px;
-        }
-        .auth-brand svg {
-            width: 32px;
-            height: 32px;
-        }
-        .auth-brand span {
-            font-family: 'Anton', sans-serif;
-            font-size: 26px;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            color: var(--ink);
-        }
-        .auth-brand .accent {
-            color: var(--plate-yellow);
-        }
-        .auth-sub {
-            text-align: center;
-            font-size: 13.5px;
-            color: var(--muted);
-            margin-bottom: 24px;
-        }
-        .form-label-board {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--ink);
-            font-weight: 700;
-            margin-bottom: 6px;
-            display: block;
-        }
-        .form-control-board {
-            background: #ffffff;
-            border: 1px solid var(--board-line);
-            border-radius: 4px;
-            padding: 10px 14px;
-            font-size: 14px;
-            color: var(--ink);
-            width: 100%;
-            transition: border-color 0.15s ease;
-        }
-        .form-control-board:focus {
-            outline: none;
-            border-color: var(--plate-blue);
-            box-shadow: 0 0 0 3px rgba(46, 95, 138, 0.15);
-        }
-        .btn-auth {
-            background: var(--ink);
-            color: var(--board);
-            border: none;
-            padding: 11px 16px;
-            border-radius: 4px;
-            font-size: 14px;
-            font-weight: 600;
-            width: 100%;
-            cursor: pointer;
-            transition: opacity 0.15s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 24px;
-        }
-        .btn-auth:hover {
-            opacity: 0.92;
-            color: var(--board);
-        }
-        .auth-footer {
-            margin-top: 24px;
-            padding-top: 20px;
-            border-top: 1px dashed var(--board-line);
-            text-align: center;
-            font-size: 13px;
-            color: var(--muted);
-        }
-        .auth-footer a {
-            color: var(--plate-blue);
-            font-weight: 600;
-            text-decoration: none;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
-        }
-        .auth-footer a:hover {
-            text-decoration: underline;
-        }
-        .alert-board {
-            border: 1px solid var(--board-line);
-            border-radius: 4px;
-            font-size: 13px;
-            padding: 10px 14px;
-            margin-bottom: 20px;
-        }
-    </style>
 </head>
-<body>
+<body class="min-h-screen flex items-center justify-center relative bg-surface-container-lowest font-body-md text-on-surface">
+    <div class="ambient-glow"></div>
+    <main class="w-full max-w-md px-margin-mobile md:px-0 relative z-10">
+        <div class="glass-card rounded-xl p-8 md:p-10 flex flex-col items-center w-full relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-secondary-fixed to-transparent opacity-50"></div>
 
-    <div class="auth-card">
-        <div class="auth-brand">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#20211d" stroke-width="2"><path d="M4 8v8M2 10v4M8 6v12M20 8v8M22 10v4M16 6v12" stroke-linecap="round"/></svg>
-            <span>GYM<span class="accent">PRO</span></span>
+            <div class="text-center mb-8 w-full">
+                <h1 class="font-headline-xl text-headline-xl text-primary font-bold tracking-tighter mb-2">GYMPRO</h1>
+                <p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest opacity-80">Create New Account</p>
+            </div>
+
+            <div th:if="${errorMessage}" class="alert-glass alert-glass-error w-full mb-4 flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px]">error</span>
+                <span th:text="${errorMessage}">Error message</span>
+            </div>
+
+            <form th:action="@{/register}" method="post" class="w-full flex flex-col gap-5">
+                <div class="relative w-full">
+                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant opacity-70">badge</span>
+                    <input class="tech-input w-full pl-12 pr-4 py-3.5 rounded-lg font-body-md text-body-md"
+                           type="text" name="username" th:value="${username}" placeholder="Username" required autofocus>
+                </div>
+                <div class="relative w-full">
+                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant opacity-70">mail</span>
+                    <input class="tech-input w-full pl-12 pr-4 py-3.5 rounded-lg font-body-md text-body-md"
+                           type="email" name="email" th:value="${email}" placeholder="Email Address (optional)">
+                </div>
+                <div class="relative w-full">
+                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant opacity-70">lock</span>
+                    <input class="tech-input w-full pl-12 pr-4 py-3.5 rounded-lg font-body-md text-body-md"
+                           type="password" name="password" placeholder="Password" required>
+                </div>
+                <div class="relative w-full">
+                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant opacity-70">lock_reset</span>
+                    <input class="tech-input w-full pl-12 pr-4 py-3.5 rounded-lg font-body-md text-body-md"
+                           type="password" name="confirmPassword" placeholder="Confirm Password" required>
+                </div>
+                <button class="w-full bg-secondary-fixed text-[#002022] font-label-md text-label-md py-3.5 rounded-lg mt-1 hover:bg-secondary-fixed-dim hover:shadow-[0_0_20px_rgba(125,244,255,0.4)] transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 group cursor-pointer"
+                        type="submit">
+                    <span>Create Account</span>
+                    <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">how_to_reg</span>
+                </button>
+            </form>
+
+            <div class="mt-8 pt-6 border-t border-white/10 w-full text-center">
+                <p class="font-label-sm text-label-sm text-on-surface-variant mb-3">Already registered?</p>
+                <a th:href="@{/login}" class="w-full flex items-center justify-center gap-2 bg-white/5 border border-primary-fixed/50 text-primary-fixed font-label-md text-label-md py-3 rounded-lg hover:bg-primary-fixed/10 hover:border-primary-fixed hover:shadow-[0_0_15px_rgba(204,255,0,0.25)] transition-all duration-300 text-center no-underline cursor-pointer">
+                    <span class="material-symbols-outlined text-[18px]">login</span>
+                    <span>Back to Sign In</span>
+                </a>
+            </div>
         </div>
-        <div class="auth-sub">Register a new administrator account</div>
-
-        <div th:if="${errorMessage}" class="alert-board bg-danger bg-opacity-10 text-danger border-danger border-opacity-25" th:text="${errorMessage}">
-            Error message
+        <div class="mt-6 text-center">
+            <p class="font-label-sm text-label-sm text-on-surface-variant opacity-50">GYMPRO OS v2.0.4 - SECURE NODE</p>
         </div>
-
-        <form th:action="@{/register}" method="post">
-            <div class="mb-3">
-                <label class="form-label-board">Username</label>
-                <input type="text" name="username" th:value="${username}" class="form-control-board" placeholder="Choose username" required autofocus>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label-board">Email Address</label>
-                <input type="email" name="email" th:value="${email}" class="form-control-board" placeholder="name@gympro.com">
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label-board">Password</label>
-                <input type="password" name="password" class="form-control-board" placeholder="Enter password" required>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label-board">Confirm Password</label>
-                <input type="password" name="confirmPassword" class="form-control-board" placeholder="Confirm password" required>
-            </div>
-
-            <button type="submit" class="btn-auth">
-                <span>Create Account</span> →
-            </button>
-        </form>
-
-        <div class="auth-footer">
-            <div class="mb-2">Already have an account?</div>
-            <div>
-                <a th:href="@{/login}">Back to Login →</a>
-            </div>
-        </div>
-    </div>
-
+    </main>
 </body>
 </html>

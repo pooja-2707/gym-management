@@ -2,86 +2,82 @@
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout}">
 <body>
 <div id="page-content">
-
-    <div class="top-header">
+    <!-- Page Title + Actions -->
+    <div class="flex justify-between items-end mb-8">
         <div>
-            <h2>Payments</h2>
-            <span class="breadcrumb">Track all payment records & revenue</span>
+            <h2 class="font-headline-xl text-headline-xl text-primary">Payments Ledger</h2>
+            <p class="font-body-md text-body-md text-on-surface-variant mt-1">Track all payment records &amp; revenue streams.</p>
         </div>
-        <a th:href="@{/payments/add}" class="btn btn-primary">
-            <i class="bi bi-plus-lg me-1"></i> Record Payment
+        <a th:href="@{/payments/add}" class="btn-primary-neon no-underline">
+            <span class="material-symbols-outlined text-[18px]">add_card</span>
+            Record Payment
         </a>
     </div>
 
     <!-- Revenue Summary Cards -->
-    <div class="row g-3 mb-4">
-        <div class="col-md-6">
-            <div class="stat-card p-3 d-flex align-items-center gap-3">
-                <div class="stat-icon bg-success text-white rounded-3 fs-3 px-3 py-2">
-                    <i class="bi bi-wallet2"></i>
-                </div>
-                <div>
-                    <h4 class="mb-0 fw-bold">₹<span th:text="${#numbers.formatDecimal(totalRevenue ?: 0, 1, 0)}">0</span></h4>
-                    <span class="text-muted small">Total Revenue</span>
-                </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter mb-gutter">
+        <div class="glass-panel p-6 rounded-xl flex items-center gap-4 transition-all duration-300 hover:border-primary-fixed/30 hover:shadow-[0px_0px_40px_rgba(195,244,0,0.1)]">
+            <div class="p-3 bg-primary-fixed/10 rounded-lg border border-primary-fixed/20">
+                <span class="material-symbols-outlined text-primary-fixed text-[28px]">account_balance_wallet</span>
+            </div>
+            <div>
+                <p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-1">Total Revenue</p>
+                <p class="font-headline-lg text-headline-lg text-primary font-bold">₹<span th:text="${#numbers.formatDecimal(totalRevenue ?: 0, 1, 'COMMA', 0, 'POINT')}">0</span></p>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="stat-card p-3 d-flex align-items-center gap-3">
-                <div class="stat-icon bg-info text-white rounded-3 fs-3 px-3 py-2">
-                    <i class="bi bi-graph-up-arrow"></i>
-                </div>
-                <div>
-                    <h4 class="mb-0 fw-bold">₹<span th:text="${#numbers.formatDecimal(monthlyRevenue ?: 0, 1, 0)}">0</span></h4>
-                    <span class="text-muted small">This Month's Revenue</span>
-                </div>
+        <div class="glass-panel p-6 rounded-xl flex items-center gap-4 transition-all duration-300 hover:border-secondary-fixed/30 hover:shadow-[0px_0px_40px_rgba(0,219,233,0.1)]">
+            <div class="p-3 bg-secondary-fixed/10 rounded-lg border border-secondary-fixed/20">
+                <span class="material-symbols-outlined text-secondary-fixed text-[28px]">trending_up</span>
+            </div>
+            <div>
+                <p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-1">This Month's Revenue</p>
+                <p class="font-headline-lg text-headline-lg text-primary font-bold">₹<span th:text="${#numbers.formatDecimal(monthlyRevenue ?: 0, 1, 'COMMA', 0, 'POINT')}">0</span></p>
             </div>
         </div>
     </div>
 
-    <div class="content-card">
-        <div class="card-body">
-            <div th:if="${#lists.isEmpty(payments)}" class="text-center py-4 text-muted">
-                No payment records found.
-            </div>
+    <!-- Payments Table -->
+    <div class="glass-panel rounded-xl overflow-hidden">
+        <div th:if="${#lists.isEmpty(payments)}" class="text-center py-16">
+            <span class="material-symbols-outlined text-[64px] text-on-surface-variant/20 mb-4">receipt_long</span>
+            <p class="font-body-md text-on-surface-variant">No payment records found.</p>
+        </div>
 
-            <div th:unless="${#lists.isEmpty(payments)}" class="table-responsive">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Member</th>
-                            <th>Amount</th>
-                            <th>Payment Date</th>
-                            <th>Mode</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="pay, iterStat : ${payments}">
-                            <td th:text="${iterStat.count}">1</td>
-                            <td th:text="${pay.member != null ? pay.member.name : 'N/A'}">John Doe</td>
-                            <td class="fw-bold text-success">₹<span th:text="${#numbers.formatDecimal(pay.amount, 1, 0)}">1000</span></td>
-                            <td th:text="${#temporals.format(pay.paymentDate, 'dd-MMM-yyyy')}">01-Jan-2026</td>
-                            <td>
-                                <span class="badge bg-light text-dark border" th:text="${pay.paymentMode}">UPI</span>
-                            </td>
-                            <td>
-                                <a th:href="@{/payments/edit/{id}(id=${pay.id})}" class="btn btn-sm btn-warning me-1">
-                                    <i class="bi bi-pencil"></i>
+        <div th:unless="${#lists.isEmpty(payments)}" class="overflow-x-auto">
+            <table class="glass-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Member</th>
+                        <th>Amount</th>
+                        <th>Payment Date</th>
+                        <th>Mode</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="pay, iterStat : ${payments}">
+                        <td th:text="${iterStat.count}">1</td>
+                        <td class="font-bold" th:text="${pay.member != null ? pay.member.name : 'N/A'}">John Doe</td>
+                        <td class="text-primary-fixed font-bold">₹<span th:text="${#numbers.formatDecimal(pay.amount, 1, 0)}">1000</span></td>
+                        <td class="font-label-sm uppercase" th:text="${#temporals.format(pay.paymentDate, 'dd-MMM-yyyy')}">01-Jan-2026</td>
+                        <td><span class="badge-info" th:text="${pay.paymentMode}">UPI</span></td>
+                        <td>
+                            <div class="flex items-center gap-2">
+                                <a th:href="@{/payments/edit/{id}(id=${pay.id})}" class="btn-ghost-neon no-underline text-[12px]" title="Edit">
+                                    <span class="material-symbols-outlined text-[16px]">edit</span>
                                 </a>
-                                <a th:href="@{/payments/delete/{id}(id=${pay.id})}" class="btn btn-sm btn-danger"
+                                <a th:href="@{/payments/delete/{id}(id=${pay.id})}" class="btn-danger-neon no-underline text-[12px]" title="Delete"
                                    onclick="return confirm('Delete this payment record?')">
-                                    <i class="bi bi-trash"></i>
+                                    <span class="material-symbols-outlined text-[16px]">delete</span>
                                 </a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
-
 </div>
 </body>
 </html>

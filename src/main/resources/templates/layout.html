@@ -1,80 +1,500 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Gym Membership Management System - Manage members, plans, payments, and more.">
-    <title th:text="${pageTitle} != null ? ${pageTitle} + ' | Gym Management' : 'Gym Management'">Gym Management</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="description" content="GYMPRO Command Center - Neon Glass Design">
+    <title th:text="${pageTitle} != null ? ${pageTitle} + ' | GYMPRO' : 'GYMPRO Command Center'">GYMPRO Command Center</title>
+
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Tailwind Config: Neon Glass Design System -->
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "inverse-on-surface": "#313030",
+                        "on-primary-fixed": "#161e00",
+                        "outline-variant": "#444933",
+                        "on-primary": "#283500",
+                        "on-error": "#690005",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "surface-variant": "#353534",
+                        "error": "#ffb4ab",
+                        "surface-container-high": "#2a2a2a",
+                        "on-surface-variant": "#c4c9ac",
+                        "tertiary-container": "#e5e2e1",
+                        "secondary-container": "#00eefc",
+                        "on-background": "#e5e2e1",
+                        "secondary-fixed-dim": "#00dbe9",
+                        "background": "#131313",
+                        "on-surface": "#e5e2e1",
+                        "surface": "#131313",
+                        "surface-container-lowest": "#0e0e0e",
+                        "primary-container": "#ccff00",
+                        "outline": "#8e9379",
+                        "surface-container": "#201f1f",
+                        "on-secondary-container": "#00686f",
+                        "primary": "#ffffff",
+                        "on-tertiary": "#313030",
+                        "primary-fixed": "#ccff00",
+                        "on-tertiary-container": "#656464",
+                        "tertiary-fixed": "#e5e2e1",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed-dim": "#abd600",
+                        "on-secondary": "#00363a",
+                        "on-primary-fixed-variant": "#3c4d00",
+                        "surface-dim": "#131313",
+                        "secondary": "#d3fbff",
+                        "inverse-primary": "#506600",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "on-tertiary-fixed": "#1c1b1b",
+                        "on-secondary-fixed": "#002022",
+                        "surface-tint": "#abd600",
+                        "secondary-fixed": "#7df4ff",
+                        "tertiary": "#ffffff",
+                        "on-primary-container": "#556d00",
+                        "surface-container-highest": "#353534",
+                        "inverse-surface": "#e5e2e1",
+                        "surface-container-low": "#1c1b1b",
+                        "surface-bright": "#3a3939",
+                        "error-container": "#93000a",
+                        "on-secondary-fixed-variant": "#004f54"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "container-max-width": "1440px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "40px",
+                        "unit": "4px",
+                        "gutter": "24px"
+                    },
+                    fontFamily: {
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-xl": ["Inter"],
+                        "headline-lg-mobile": ["Inter"]
+                    },
+                    fontSize: {
+                        "label-md": ["14px", { lineHeight: "20px", letterSpacing: "0.05em", fontWeight: "600" }],
+                        "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+                        "headline-lg": ["32px", { lineHeight: "40px", letterSpacing: "-0.01em", fontWeight: "700" }],
+                        "headline-md": ["24px", { lineHeight: "32px", fontWeight: "600" }],
+                        "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }],
+                        "label-sm": ["12px", { lineHeight: "16px", fontWeight: "500" }],
+                        "headline-xl": ["48px", { lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "700" }],
+                        "headline-lg-mobile": ["28px", { lineHeight: "36px", fontWeight: "700" }]
+                    }
+                }
+            }
+        };
+    </script>
     <link th:href="@{/css/style.css}" rel="stylesheet">
 </head>
-<body>
-
-    <div class="sidebar">
-        <div class="brand">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#f4f1e8" stroke-width="2"><path d="M4 8v8M2 10v4M8 6v12M20 8v8M22 10v4M16 6v12" stroke-linecap="round"/></svg>
-            <span>GYM<span class="accent">PRO</span></span>
-        </div>
-        <nav>
-            <a th:href="@{/}" th:classappend="${activePage == 'dashboard'} ? 'active' : ''">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-                <span>Dashboard</span>
-            </a>
-            <a th:href="@{/members}" th:classappend="${activePage == 'members'} ? 'active' : ''">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                <span>Members</span>
-            </a>
-            <a th:href="@{/plans}" th:classappend="${activePage == 'plans'} ? 'active' : ''">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8"/></svg>
-                <span>Plans</span>
-            </a>
-            <a th:href="@{/subscriptions}" th:classappend="${activePage == 'subscriptions'} ? 'active' : ''">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-                <span>Subscriptions</span>
-            </a>
-            <a th:href="@{/payments}" th:classappend="${activePage == 'payments'} ? 'active' : ''">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-                <span>Payments</span>
-            </a>
-            <a th:href="@{/trainers}" th:classappend="${activePage == 'trainers'} ? 'active' : ''">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                <span>Trainers</span>
-            </a>
-            <a th:href="@{/attendance}" th:classappend="${activePage == 'attendance'} ? 'active' : ''">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><path d="M9 16l2 2 4-4"/></svg>
-                <span>Attendance</span>
-            </a>
-            <a th:href="@{/reports}" th:classappend="${activePage == 'reports'} ? 'active' : ''">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
-                <span>Reports</span>
-            </a>
-        </nav>
-        <a class="logout" th:href="@{/logout}">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-            <span>[-> Logout</span>
-        </a>
+<body class="bg-background text-on-surface font-body-md h-screen overflow-hidden flex relative selection:bg-primary-fixed selection:text-on-primary-fixed">
+    <!-- Background Atmospheric Assets -->
+    <div class="bg-atmosphere">
+        <img alt="" class="absolute -top-20 -right-20 w-[600px] h-auto blur-[2px] transform rotate-12 opacity-60"
+             src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHfTQMqfUs3SXUbX_t-byaw_U1nCED0k9GdBZz5noOtxczdjAKMTbrAlQBLp-kDQZutqb1l-DxSEsyhHKKmQ1Tjq7wXTzuR7q4nXgNEjnFHhfn1chq-gcXWbWkyfTXoJP6JsR_VU0nhNVbMGpoCjd2ixFmKGsVYrXgz7V_vs2C19TsY9LRyxQWRAYsYqb4FzgqOI1_lhqwiALguKMFblNso-ejprlEz5pfX6MsEU82ntzBOsSrz1qTOk3DLP4DFUSxzkamEiBXGvcr">
+        <img alt="" class="absolute -bottom-40 -left-40 w-[800px] h-auto blur-[4px] transform -rotate-12 opacity-50"
+             src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1WYP8gsKVILZbSuy-cUEJ6Vul-ekg--eKMUWb6ECxtBy_meGfTn43cxrbiuVAdUbpguTLAAi1TyDjENynb640rnFAhXi3gyb0cYXukjPBFwK4JHs3I-e_xcUFRI2GfmhvfJDBYP1CJzswUDALMA7y1mM93TOx0xLL1TtEg4hBSfbmKnhd0qZ1-zm9xiRkVdrRuyRUl9537nAJxIYsHlHXovhNP5tt-8WX-NcV0VmoE28wzRxRT9ES7UJ-W1aVprw7vX__kfQlSVEC">
     </div>
 
-    <main class="main-content">
-        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show mb-4" role="alert">
-            <span th:text="${successMessage}">Success message</span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <!-- SideNavBar Component -->
+    <nav class="fixed left-0 top-0 z-40 flex flex-col h-[calc(100vh-48px)] w-64 m-6 rounded-xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-[0px_0px_40px_rgba(204,255,0,0.1)] hidden md:flex">
+        <!-- Header -->
+        <div class="p-6 mb-4">
+            <h1 class="font-headline-md text-headline-md font-bold text-primary flex items-center gap-2 tracking-tight">
+                <span class="material-symbols-outlined text-primary-fixed" style="font-variation-settings: 'FILL' 1;">fitness_center</span>
+                GYMPRO
+            </h1>
+            <p class="font-label-sm text-label-sm text-on-surface-variant mt-1 uppercase tracking-widest">Command Center</p>
         </div>
-        
-        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
-            <span th:text="${errorMessage}">Error message</span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <!-- Navigation Links -->
+        <div class="flex-1 flex flex-col gap-2 px-4 overflow-y-auto">
+            <!-- Dashboard -->
+            <a th:href="@{/}"
+               th:class="${activePage == 'dashboard'}
+                   ? 'flex items-center gap-3 px-4 py-3 rounded-lg text-primary-fixed bg-white/10 border-r-2 border-primary-fixed transition-all duration-200 group'
+                   : 'flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary-fixed hover:bg-white/10 transition-all duration-300 group'">
+                <span class="material-symbols-outlined" th:style="${activePage == 'dashboard'} ? 'font-variation-settings: FILL 1;' : ''">dashboard</span>
+                <span class="font-label-md text-label-md">Dashboard</span>
+            </a>
+            <!-- Analytics -->
+            <a th:href="@{/reports}"
+               th:class="${activePage == 'reports'}
+                   ? 'flex items-center gap-3 px-4 py-3 rounded-lg text-primary-fixed bg-white/10 border-r-2 border-primary-fixed transition-all duration-200 group'
+                   : 'flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary-fixed hover:bg-white/10 transition-all duration-300 group'">
+                <span class="material-symbols-outlined">monitoring</span>
+                <span class="font-label-md text-label-md group-hover:text-primary-fixed">Analytics</span>
+            </a>
+            <!-- Members -->
+            <a th:href="@{/members}"
+               th:class="${activePage == 'members'}
+                   ? 'flex items-center gap-3 px-4 py-3 rounded-lg text-primary-fixed bg-white/10 border-r-2 border-primary-fixed transition-all duration-200 group'
+                   : 'flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary-fixed hover:bg-white/10 transition-all duration-300 group'">
+                <span class="material-symbols-outlined">group</span>
+                <span class="font-label-md text-label-md group-hover:text-primary-fixed">Members</span>
+            </a>
+            <!-- Subscriptions -->
+            <a th:href="@{/subscriptions}"
+               th:class="${activePage == 'subscriptions'}
+                   ? 'flex items-center gap-3 px-4 py-3 rounded-lg text-primary-fixed bg-white/10 border-r-2 border-primary-fixed transition-all duration-200 group'
+                   : 'flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary-fixed hover:bg-white/10 transition-all duration-300 group'">
+                <span class="material-symbols-outlined">event_repeat</span>
+                <span class="font-label-md text-label-md group-hover:text-primary-fixed">Subscriptions</span>
+            </a>
+            <!-- Plans -->
+            <a th:href="@{/plans}"
+               th:class="${activePage == 'plans'}
+                   ? 'flex items-center gap-3 px-4 py-3 rounded-lg text-primary-fixed bg-white/10 border-r-2 border-primary-fixed transition-all duration-200 group'
+                   : 'flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary-fixed hover:bg-white/10 transition-all duration-300 group'">
+                <span class="material-symbols-outlined">style</span>
+                <span class="font-label-md text-label-md group-hover:text-primary-fixed">Plans</span>
+            </a>
+            <!-- Trainers -->
+            <a th:href="@{/trainers}"
+               th:class="${activePage == 'trainers'}
+                   ? 'flex items-center gap-3 px-4 py-3 rounded-lg text-primary-fixed bg-white/10 border-r-2 border-primary-fixed transition-all duration-200 group'
+                   : 'flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary-fixed hover:bg-white/10 transition-all duration-300 group'">
+                <span class="material-symbols-outlined">fitness_center</span>
+                <span class="font-label-md text-label-md group-hover:text-primary-fixed">Trainers</span>
+            </a>
+            <!-- Attendance -->
+            <a th:href="@{/attendance}"
+               th:class="${activePage == 'attendance'}
+                   ? 'flex items-center gap-3 px-4 py-3 rounded-lg text-primary-fixed bg-white/10 border-r-2 border-primary-fixed transition-all duration-200 group'
+                   : 'flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary-fixed hover:bg-white/10 transition-all duration-300 group'">
+                <span class="material-symbols-outlined">calendar_today</span>
+                <span class="font-label-md text-label-md group-hover:text-primary-fixed">Attendance</span>
+            </a>
+            <!-- Payments -->
+            <a th:href="@{/payments}"
+               th:class="${activePage == 'payments'}
+                   ? 'flex items-center gap-3 px-4 py-3 rounded-lg text-primary-fixed bg-white/10 border-r-2 border-primary-fixed transition-all duration-200 group'
+                   : 'flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary-fixed hover:bg-white/10 transition-all duration-300 group'">
+                <span class="material-symbols-outlined">payments</span>
+                <span class="font-label-md text-label-md group-hover:text-primary-fixed">Payments</span>
+            </a>
         </div>
-        
-        <div th:insert="~{:: #page-content}">
+        <!-- User / Logout -->
+        <div class="p-4 mt-auto border-t border-white/10">
+            <div class="flex items-center gap-3 px-4 py-3">
+                <div class="w-10 h-10 rounded-full bg-surface-container-high border border-white/20 flex items-center justify-center text-primary font-label-md">
+                    <span class="material-symbols-outlined text-[20px]">account_circle</span>
+                </div>
+                <div>
+                    <p class="font-label-md text-label-md text-primary">Admin</p>
+                    <a th:href="@{/logout}" class="font-label-sm text-label-sm text-on-surface-variant hover:text-error transition-colors">Sign Out</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col h-full md:ml-64 relative z-10 w-full">
+        <!-- TopNavBar Component -->
+        <header class="flex justify-between items-center px-margin-desktop py-4 w-full bg-transparent">
+            <!-- Brand Mobile -->
+            <div class="md:hidden flex items-center">
+                <h1 class="font-headline-lg-mobile text-headline-lg-mobile font-black text-primary tracking-tighter">GYMPRO</h1>
+            </div>
+            <!-- Search Bar -->
+            <div class="hidden md:flex items-center w-96 relative group focus-within:ring-1 focus-within:ring-secondary-fixed rounded-full transition-all">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <span class="material-symbols-outlined text-on-surface-variant group-focus-within:text-secondary-fixed transition-colors">search</span>
+                </div>
+                <input id="top-search-input" onkeyup="handleQuickSearch(this.value)"
+                       class="w-full bg-white/5 border border-white/10 rounded-full py-2 pl-12 pr-4 text-on-surface placeholder-on-surface-variant/50 focus:outline-none focus:bg-white/10 focus:border-secondary-fixed/50 backdrop-blur-md transition-all font-body-md text-body-md"
+                       placeholder="Search pages, members, metrics..." type="text">
+                <!-- Search Results Popover -->
+                <div id="search-popover" class="hidden absolute top-12 left-0 right-0 bg-surface-container-high/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl p-3 z-50">
+                    <div id="search-results-list" class="space-y-1 max-h-60 overflow-y-auto"></div>
+                </div>
+            </div>
+            <!-- Trailing Icons -->
+            <div class="flex items-center gap-2 relative">
+                <!-- Notification Button -->
+                <button id="notif-btn" onclick="toggleHeaderDropdown('notif-dropdown', event)"
+                        class="p-2 rounded-full text-on-surface-variant hover:text-secondary-fixed transition-colors hover:bg-white/5 relative group focus:outline-none">
+                    <span class="material-symbols-outlined">notifications</span>
+                    <span id="notif-badge" class="absolute top-2 right-2 w-2.5 h-2.5 bg-primary-fixed rounded-full shadow-[0_0_8px_rgba(204,255,0,1)]"></span>
+                </button>
+
+                <!-- Profile Button -->
+                <button id="profile-btn" onclick="toggleHeaderDropdown('profile-dropdown', event)"
+                        class="p-2 rounded-full text-on-surface-variant hover:text-secondary-fixed transition-colors hover:bg-white/5 group focus:outline-none">
+                    <span class="material-symbols-outlined">account_circle</span>
+                </button>
+
+                <!-- Help Button -->
+                <button id="help-btn" onclick="openGymModal('help-modal')"
+                        class="p-2 rounded-full text-on-surface-variant hover:text-secondary-fixed transition-colors hover:bg-white/5 group focus:outline-none">
+                    <span class="material-symbols-outlined">help</span>
+                </button>
+
+                <!-- Notifications Dropdown Panel -->
+                <div id="notif-dropdown" class="hidden absolute right-12 top-12 w-80 bg-surface-container-high/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl p-4 z-50 transition-all duration-200">
+                    <div class="flex justify-between items-center pb-3 border-b border-white/10 mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary-fixed text-[20px]">notifications_active</span>
+                            <h4 class="font-headline-md text-[16px] text-primary font-bold">Notifications</h4>
+                        </div>
+                        <button onclick="clearNotifications()" class="font-label-sm text-[11px] text-on-surface-variant hover:text-primary-fixed transition-colors">Mark as read</button>
+                    </div>
+                    <div id="notif-list" class="space-y-2 max-h-64 overflow-y-auto pr-1">
+                        <a th:href="@{/subscriptions}" class="block p-2.5 rounded-lg bg-white/5 hover:bg-white/10 transition-colors no-underline">
+                            <p class="font-label-sm text-primary font-bold flex justify-between">
+                                <span>Subscription Alert</span>
+                                <span class="text-error text-[10px]">Just now</span>
+                            </p>
+                            <p class="font-body-md text-[12px] text-on-surface-variant mt-1">Emily Davis's Monthly Plan expired yesterday.</p>
+                        </a>
+                        <a th:href="@{/payments}" class="block p-2.5 rounded-lg bg-white/5 hover:bg-white/10 transition-colors no-underline">
+                            <p class="font-label-sm text-primary font-bold flex justify-between">
+                                <span>Payment Received</span>
+                                <span class="text-secondary-fixed text-[10px]">10m ago</span>
+                            </p>
+                            <p class="font-body-md text-[12px] text-on-surface-variant mt-1">Payment of ₹14,000 received for Robert Brown.</p>
+                        </a>
+                        <a th:href="@{/trainers}" class="block p-2.5 rounded-lg bg-white/5 hover:bg-white/10 transition-colors no-underline">
+                            <p class="font-label-sm text-primary font-bold flex justify-between">
+                                <span>Trainer Directory</span>
+                                <span class="text-on-surface-variant text-[10px]">1h ago</span>
+                            </p>
+                            <p class="font-body-md text-[12px] text-on-surface-variant mt-1">New trainer Sarah Connor assigned to CrossFit.</p>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Profile Dropdown Panel -->
+                <div id="profile-dropdown" class="hidden absolute right-4 top-12 w-64 bg-surface-container-high/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl p-4 z-50 transition-all duration-200">
+                    <div class="flex items-center gap-3 pb-3 border-b border-white/10 mb-3">
+                        <div class="w-10 h-10 rounded-full bg-primary-fixed/20 border border-primary-fixed/40 flex items-center justify-center text-primary-fixed font-bold">
+                            A
+                        </div>
+                        <div>
+                            <p class="font-headline-md text-[15px] text-primary font-bold">Admin</p>
+                            <p class="font-label-sm text-[11px] text-on-surface-variant">admin@gympro.com</p>
+                        </div>
+                    </div>
+                    <div class="space-y-1">
+                        <button onclick="openGymModal('profile-modal'); toggleHeaderDropdown('profile-dropdown')"
+                                class="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-on-surface-variant hover:text-primary-fixed hover:bg-white/5 transition-colors font-label-md text-left">
+                            <span class="material-symbols-outlined text-[18px]">person</span>
+                            <span>Admin Profile</span>
+                        </button>
+                        <a th:href="@{/logout}" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-error hover:bg-error/10 transition-colors font-label-md no-underline">
+                            <span class="material-symbols-outlined text-[18px]">logout</span>
+                            <span>Sign Out</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Canvas / Page Content -->
+        <div th:insert="~{:: #page-content}" class="flex-1 overflow-y-auto px-margin-mobile md:px-margin-desktop pb-32">
         </div>
     </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script th:src="@{/js/script.js}"></script>
+    <!-- Footer Component (Floating Dock) -->
+    <footer class="flex gap-gutter items-center z-50 fixed bottom-6 right-6 rounded-full px-6 py-3 border border-white/10 bg-white/5 backdrop-blur-md shadow-2xl shadow-secondary-fixed/5 hover:scale-105 duration-300">
+        <span class="font-label-sm text-label-sm text-on-surface-variant/60 mr-4 border-r border-white/10 pr-4">GYMPRO OS v2.0.4</span>
+        <div class="flex gap-4">
+            <button onclick="openGymModal('help-modal')" class="font-label-sm text-label-sm text-on-surface-variant/60 hover:text-secondary-fixed transition-all cursor-pointer">Documentation</button>
+            <a class="font-label-sm text-label-sm text-on-surface-variant/60 hover:text-secondary-fixed transition-all no-underline" th:href="@{/logout}">Sign Out</a>
+        </div>
+    </footer>
+
+    <!-- HELP & DOCUMENTATION MODAL -->
+    <div id="help-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
+        <div class="glass-panel w-full max-w-xl rounded-2xl p-6 border border-white/10 shadow-2xl relative animate-fadeIn">
+            <button onclick="closeGymModal('help-modal')" class="absolute top-4 right-4 text-on-surface-variant hover:text-primary transition-colors">
+                <span class="material-symbols-outlined text-[24px]">close</span>
+            </button>
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 rounded-full bg-secondary-fixed/20 border border-secondary-fixed/40 flex items-center justify-center text-secondary-fixed">
+                    <span class="material-symbols-outlined">help</span>
+                </div>
+                <div>
+                    <h3 class="font-headline-md text-headline-md text-primary font-bold">Help &amp; Support Center</h3>
+                    <p class="font-label-sm text-on-surface-variant">System Navigation Guide &amp; Keyboard Shortcuts</p>
+                </div>
+            </div>
+            <div class="space-y-4">
+                <div class="p-4 rounded-xl bg-white/5 border border-white/10">
+                    <h4 class="font-label-md text-primary-fixed font-bold mb-2 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[18px]">keyboard</span>
+                        Quick Navigation Links
+                    </h4>
+                    <div class="grid grid-cols-2 gap-2 font-label-sm">
+                        <a th:href="@{/}" class="p-2 rounded bg-white/5 hover:bg-white/10 text-on-surface no-underline flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[16px] text-primary-fixed">dashboard</span> Dashboard
+                        </a>
+                        <a th:href="@{/members}" class="p-2 rounded bg-white/5 hover:bg-white/10 text-on-surface no-underline flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[16px] text-secondary-fixed">group</span> Members Directory
+                        </a>
+                        <a th:href="@{/payments}" class="p-2 rounded bg-white/5 hover:bg-white/10 text-on-surface no-underline flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[16px] text-primary-fixed">payments</span> Payments &amp; Ledger
+                        </a>
+                        <a th:href="@{/reports}" class="p-2 rounded bg-white/5 hover:bg-white/10 text-on-surface no-underline flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[16px] text-secondary-fixed">monitoring</span> Reports &amp; Analytics
+                        </a>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl bg-white/5 border border-white/10">
+                    <h4 class="font-label-md text-primary font-bold mb-2 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[18px]">support_agent</span>
+                        Support Contacts
+                    </h4>
+                    <p class="font-body-md text-[13px] text-on-surface-variant">Need assistance with your Gym Management System?</p>
+                    <p class="font-label-md text-secondary-fixed mt-1">📧 Email: support@gympro.com</p>
+                </div>
+            </div>
+            <div class="mt-6 pt-4 border-t border-white/10 flex justify-end">
+                <button onclick="closeGymModal('help-modal')" class="btn-primary-neon">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN PROFILE MODAL -->
+    <div id="profile-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
+        <div class="glass-panel w-full max-w-md rounded-2xl p-6 border border-white/10 shadow-2xl relative">
+            <button onclick="closeGymModal('profile-modal')" class="absolute top-4 right-4 text-on-surface-variant hover:text-primary transition-colors">
+                <span class="material-symbols-outlined text-[24px]">close</span>
+            </button>
+            <div class="text-center mb-6">
+                <div class="w-20 h-20 rounded-full bg-primary-fixed/20 border-2 border-primary-fixed mx-auto flex items-center justify-center text-primary-fixed font-headline-xl text-[32px] mb-3">
+                    A
+                </div>
+                <h3 class="font-headline-md text-headline-md text-primary font-bold">Admin Account</h3>
+                <p class="font-label-sm text-secondary-fixed">System Administrator</p>
+            </div>
+            <div class="space-y-3 font-label-md">
+                <div class="p-3 rounded-lg bg-white/5 flex justify-between items-center">
+                    <span class="text-on-surface-variant">Username</span>
+                    <span class="text-primary font-bold">admin</span>
+                </div>
+                <div class="p-3 rounded-lg bg-white/5 flex justify-between items-center">
+                    <span class="text-on-surface-variant">Email Address</span>
+                    <span class="text-primary font-bold">admin@gympro.com</span>
+                </div>
+                <div class="p-3 rounded-lg bg-white/5 flex justify-between items-center">
+                    <span class="text-on-surface-variant">Status</span>
+                    <span class="badge-active">Active</span>
+                </div>
+            </div>
+            <div class="mt-6 pt-4 border-t border-white/10 flex justify-end gap-2">
+                <button onclick="closeGymModal('profile-modal')" class="btn-ghost-neon">Close</button>
+                <a th:href="@{/logout}" class="btn-danger-neon no-underline">Sign Out</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- GLOBAL INTERACTIVE SCRIPTS -->
+    <script th:inline="javascript">
+        function toggleHeaderDropdown(dropdownId, event) {
+            if (event) event.stopPropagation();
+            const target = document.getElementById(dropdownId);
+            const isHidden = target.classList.contains('hidden');
+            // Close all dropdowns
+            document.querySelectorAll('#notif-dropdown, #profile-dropdown').forEach(el => el.classList.add('hidden'));
+            if (isHidden) {
+                target.classList.remove('hidden');
+            }
+        }
+
+        function clearNotifications() {
+            const notifBadge = document.getElementById('notif-badge');
+            if (notifBadge) notifBadge.classList.add('hidden');
+            const notifList = document.getElementById('notif-list');
+            if (notifList) {
+                notifList.innerHTML = '<p class="font-body-md text-[13px] text-on-surface-variant text-center py-4">All notifications caught up!</p>';
+            }
+        }
+
+        function openGymModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeGymModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function handleQuickSearch(query) {
+            const popover = document.getElementById('search-popover');
+            const list = document.getElementById('search-results-list');
+            if (!query || query.trim().length === 0) {
+                popover.classList.add('hidden');
+                return;
+            }
+            popover.classList.remove('hidden');
+            const q = query.toLowerCase();
+            const sections = [
+                { name: 'Dashboard Overview', icon: 'dashboard', url: '/' },
+                { name: 'Members Directory', icon: 'group', url: '/members' },
+                { name: 'Add New Member', icon: 'person_add', url: '/members/add' },
+                { name: 'Trainers Directory', icon: 'fitness_center', url: '/trainers' },
+                { name: 'Add Trainer', icon: 'person_add', url: '/trainers/add' },
+                { name: 'Membership Plans', icon: 'style', url: '/plans' },
+                { name: 'Active Subscriptions', icon: 'event_repeat', url: '/subscriptions' },
+                { name: 'Payments & Revenue', icon: 'payments', url: '/payments' },
+                { name: 'Attendance Register', icon: 'calendar_today', url: '/attendance' },
+                { name: 'Performance Reports & Analytics', icon: 'monitoring', url: '/reports' }
+            ];
+            const filtered = sections.filter(s => s.name.toLowerCase().includes(q));
+            if (filtered.length === 0) {
+                list.innerHTML = `<p class="text-[12px] text-on-surface-variant text-center py-3">No matching pages found for "${query}"</p>`;
+            } else {
+                list.innerHTML = filtered.map(s => `
+                    <a href="${s.url}" class="flex items-center gap-2.5 p-2 rounded-lg bg-white/5 hover:bg-white/10 text-on-surface hover:text-primary-fixed transition-colors no-underline text-[13px]">
+                        <span class="material-symbols-outlined text-[18px] text-secondary-fixed">${s.icon}</span>
+                        <span>${s.name}</span>
+                    </a>
+                `).join('');
+            }
+        }
+
+        // Close dropdowns on outside click
+        window.addEventListener('click', function(e) {
+            const notifBtn = document.getElementById('notif-btn');
+            const profileBtn = document.getElementById('profile-btn');
+            const notifDropdown = document.getElementById('notif-dropdown');
+            const profileDropdown = document.getElementById('profile-dropdown');
+            const searchInput = document.getElementById('top-search-input');
+            const searchPopover = document.getElementById('search-popover');
+
+            if (notifDropdown && !notifDropdown.contains(e.target) && notifBtn && !notifBtn.contains(e.target)) {
+                notifDropdown.classList.add('hidden');
+            }
+            if (profileDropdown && !profileDropdown.contains(e.target) && profileBtn && !profileBtn.contains(e.target)) {
+                profileDropdown.classList.add('hidden');
+            }
+            if (searchPopover && !searchPopover.contains(e.target) && searchInput && !searchInput.contains(e.target)) {
+                searchPopover.classList.add('hidden');
+            }
+        });
+    </script>
 </body>
 </html>

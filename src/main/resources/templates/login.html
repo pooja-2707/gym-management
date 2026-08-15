@@ -1,177 +1,214 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login | GymPro</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>GYMPRO - Executive Login</title>
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Tailwind Config -->
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-container": "#656464",
+                        "surface-container-lowest": "#0e0e0e",
+                        "surface-tint": "#abd600",
+                        "inverse-primary": "#506600",
+                        "secondary": "#d3fbff",
+                        "surface": "#131313",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "primary-fixed-dim": "#abd600",
+                        "on-surface": "#e5e2e1",
+                        "error-container": "#93000a",
+                        "inverse-on-surface": "#313030",
+                        "on-surface-variant": "#c4c9ac",
+                        "on-secondary-fixed-variant": "#004f54",
+                        "surface-bright": "#3a3939",
+                        "on-secondary-container": "#00686f",
+                        "on-secondary-fixed": "#002022",
+                        "on-tertiary": "#313030",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "secondary-fixed-dim": "#00dbe9",
+                        "outline": "#8e9379",
+                        "on-secondary": "#00363a",
+                        "surface-variant": "#353534",
+                        "tertiary-fixed": "#e5e2e1",
+                        "tertiary": "#ffffff",
+                        "secondary-fixed": "#7df4ff",
+                        "on-background": "#e5e2e1",
+                        "tertiary-container": "#e5e2e1",
+                        "on-error-container": "#ffdad6",
+                        "background": "#131313",
+                        "surface-container": "#201f1f",
+                        "on-primary-fixed-variant": "#3c4d00",
+                        "on-primary-fixed": "#161e00",
+                        "secondary-container": "#00eefc",
+                        "primary-container": "#c3f400",
+                        "on-error": "#690005",
+                        "inverse-surface": "#e5e2e1",
+                        "primary-fixed": "#c3f400",
+                        "surface-dim": "#131313",
+                        "on-primary": "#283500",
+                        "outline-variant": "#444933",
+                        "surface-container-high": "#2a2a2a",
+                        "on-tertiary-fixed": "#1c1b1b",
+                        "primary": "#ffffff",
+                        "surface-container-low": "#1c1b1b",
+                        "on-primary-container": "#556d00",
+                        "surface-container-highest": "#353534",
+                        "error": "#ffb4ab"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "unit": "4px",
+                        "margin-mobile": "16px",
+                        "container-max-width": "1440px",
+                        "margin-desktop": "40px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-xl": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "headline-xl": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
     <link th:href="@{/css/style.css}" rel="stylesheet">
-    <style>
-        body {
-            background: var(--board);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        .auth-card {
-            background: var(--paper);
-            border: 1px solid var(--board-line);
-            border-radius: 8px;
-            width: 100%;
-            max-width: 420px;
-            padding: 36px 32px;
-            box-shadow: 0 4px 20px rgba(32, 33, 29, 0.05);
-        }
-        .auth-brand {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 6px;
-        }
-        .auth-brand svg {
-            width: 32px;
-            height: 32px;
-        }
-        .auth-brand span {
-            font-family: 'Anton', sans-serif;
-            font-size: 26px;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            color: var(--ink);
-        }
-        .auth-brand .accent {
-            color: var(--plate-yellow);
-        }
-        .auth-sub {
-            text-align: center;
-            font-size: 13.5px;
-            color: var(--muted);
-            margin-bottom: 28px;
-        }
-        .form-label-board {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--ink);
-            font-weight: 700;
-            margin-bottom: 6px;
-            display: block;
-        }
-        .form-control-board {
-            background: #ffffff;
-            border: 1px solid var(--board-line);
-            border-radius: 4px;
-            padding: 10px 14px;
-            font-size: 14px;
-            color: var(--ink);
-            width: 100%;
-            transition: border-color 0.15s ease;
-        }
-        .form-control-board:focus {
-            outline: none;
-            border-color: var(--plate-blue);
-            box-shadow: 0 0 0 3px rgba(46, 95, 138, 0.15);
-        }
-        .btn-auth {
-            background: var(--ink);
-            color: var(--board);
-            border: none;
-            padding: 11px 16px;
-            border-radius: 4px;
-            font-size: 14px;
-            font-weight: 600;
-            width: 100%;
-            cursor: pointer;
-            transition: opacity 0.15s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 24px;
-        }
-        .btn-auth:hover {
-            opacity: 0.92;
-            color: var(--board);
-        }
-        .auth-footer {
-            margin-top: 24px;
-            padding-top: 20px;
-            border-top: 1px dashed var(--board-line);
-            text-align: center;
-            font-size: 13px;
-            color: var(--muted);
-        }
-        .auth-footer a {
-            color: var(--plate-blue);
-            font-weight: 600;
-            text-decoration: none;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
-        }
-        .auth-footer a:hover {
-            text-decoration: underline;
-        }
-        .alert-board {
-            border: 1px solid var(--board-line);
-            border-radius: 4px;
-            font-size: 13px;
-            padding: 10px 14px;
-            margin-bottom: 20px;
-        }
-    </style>
 </head>
-<body>
+<body class="min-h-screen flex items-center justify-center relative bg-surface-container-lowest font-body-md text-on-surface">
+    <!-- Ambient Background -->
+    <div class="ambient-glow"></div>
 
-    <div class="auth-card">
-        <div class="auth-brand">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#20211d" stroke-width="2"><path d="M4 8v8M2 10v4M8 6v12M20 8v8M22 10v4M16 6v12" stroke-linecap="round"/></svg>
-            <span>GYM<span class="accent">PRO</span></span>
-        </div>
-        <div class="auth-sub">Sign in to manage your gym</div>
+    <main class="w-full max-w-md px-margin-mobile md:px-0 relative z-10">
+        <!-- Main Login Card -->
+        <div class="glass-card rounded-xl p-8 md:p-10 flex flex-col items-center w-full relative overflow-hidden">
+            <!-- Subtle accent line on top -->
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary-fixed to-transparent opacity-50"></div>
 
-        <div th:if="${param.error}" class="alert-board bg-danger bg-opacity-10 text-danger border-danger border-opacity-25">
-            Invalid username or password!
-        </div>
-        <div th:if="${param.logout}" class="alert-board bg-success bg-opacity-10 text-success border-success border-opacity-25">
-            You have logged out successfully.
-        </div>
-        <div th:if="${registeredMessage}" class="alert-board bg-success bg-opacity-10 text-success border-success border-opacity-25" th:text="${registeredMessage}">
-            Account registered successfully!
-        </div>
-
-        <form th:action="@{/login}" method="post">
-            <div class="mb-3">
-                <label class="form-label-board">Username</label>
-                <input type="text" name="username" class="form-control-board" placeholder="Enter username" required autofocus>
+            <!-- Header / Brand -->
+            <div class="text-center mb-8 w-full">
+                <h1 class="font-headline-xl text-headline-xl text-primary font-bold tracking-tighter mb-2">GYMPRO</h1>
+                <p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest opacity-80">Management System</p>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label-board">Password</label>
-                <input type="password" name="password" class="form-control-board" placeholder="Enter password" required>
+            <!-- Alert Messages -->
+            <div th:if="${param.error}" class="alert-glass alert-glass-error w-full mb-4 flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px]">error</span>
+                Invalid credentials entered. Please try again.
+            </div>
+            <div th:if="${param.logout}" class="alert-glass alert-glass-success w-full mb-4 flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px]">check_circle</span>
+                You have logged out successfully.
+            </div>
+            <div th:if="${registeredMessage}" class="alert-glass alert-glass-success w-full mb-4 flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px]">check_circle</span>
+                <span th:text="${registeredMessage}">Account registered successfully!</span>
             </div>
 
-            <button type="submit" class="btn-auth">
-                <span>Log In</span> →
-            </button>
-        </form>
+            <!-- Login Form -->
+            <form th:action="@{/login}" method="post" class="w-full flex flex-col gap-5">
+                <!-- Username Field -->
+                <div class="relative w-full">
+                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant opacity-70">person</span>
+                    <input class="tech-input w-full pl-12 pr-4 py-3.5 rounded-lg font-body-md text-body-md"
+                           id="username" name="username" placeholder="Username" required autofocus type="text">
+                </div>
+                <!-- Password Field -->
+                <div class="relative w-full">
+                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant opacity-70">lock</span>
+                    <input class="tech-input w-full pl-12 pr-12 py-3.5 rounded-lg font-body-md text-body-md"
+                           id="password" name="password" placeholder="Password" required type="password">
+                    <button class="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant opacity-70 hover:text-primary-fixed hover:opacity-100 transition-colors"
+                            onclick="togglePassword()" type="button">
+                        <span class="material-symbols-outlined" id="visibility-icon">visibility</span>
+                    </button>
+                </div>
+                <!-- Options Row -->
+                <div class="flex justify-between items-center w-full px-1">
+                    <label class="flex items-center gap-2 cursor-pointer group">
+                        <div class="relative flex items-center justify-center w-5 h-5 rounded border border-white/20 bg-white/5 group-hover:border-primary-fixed/50 transition-colors">
+                            <input class="absolute opacity-0 cursor-pointer w-full h-full" id="remember-me" type="checkbox">
+                            <span class="material-symbols-outlined text-[14px] text-primary-fixed opacity-0 transition-opacity" id="check-icon">check</span>
+                        </div>
+                        <span class="font-label-sm text-label-sm text-on-surface-variant group-hover:text-on-surface transition-colors">Remember Me</span>
+                    </label>
+                    <span class="font-label-sm text-label-sm text-on-surface-variant/60">Secure Access</span>
+                </div>
+                <!-- Primary Action -->
+                <button class="w-full bg-primary-fixed text-on-primary-fixed font-label-md text-label-md py-3.5 rounded-lg mt-1 hover:bg-primary-fixed-dim hover:shadow-[0_0_20px_rgba(204,255,0,0.4)] transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 group cursor-pointer"
+                        type="submit">
+                    <span>Sign In to Dashboard</span>
+                    <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">login</span>
+                </button>
+            </form>
 
-        <div class="auth-footer">
-            <div class="mb-2">Don't have an account?</div>
-            <div>
-                <a th:href="@{/register}">Register new account →</a>
-            </div>
-            <div class="mt-3 pt-2" style="font-size: 11px; font-family: 'JetBrains Mono', monospace;">
-                Default Credentials: <strong>admin</strong> / <strong>admin123</strong>
+            <!-- Register New User Section -->
+            <div class="mt-8 pt-6 border-t border-white/10 w-full text-center">
+                <p class="font-label-sm text-label-sm text-on-surface-variant mb-3">Don't have an account?</p>
+                <a th:href="@{/register}" class="w-full flex items-center justify-center gap-2 bg-white/5 border border-secondary-fixed/50 text-secondary-fixed font-label-md text-label-md py-3 rounded-lg hover:bg-secondary-fixed/10 hover:border-secondary-fixed hover:shadow-[0_0_15px_rgba(125,244,255,0.25)] transition-all duration-300 text-center no-underline cursor-pointer">
+                    <span class="material-symbols-outlined text-[18px]">person_add</span>
+                    <span>Register New User / Admin</span>
+                </a>
             </div>
         </div>
-    </div>
 
+        <!-- Footer Info -->
+        <div class="mt-6 text-center">
+            <p class="font-label-sm text-label-sm text-on-surface-variant opacity-50">GYMPRO OS v2.0.4 - SECURE NODE</p>
+        </div>
+    </main>
+
+    <script>
+        // Password visibility toggle
+        function togglePassword() {
+            const pwdInput = document.getElementById('password');
+            const icon = document.getElementById('visibility-icon');
+            if (pwdInput.type === 'password') {
+                pwdInput.type = 'text';
+                icon.textContent = 'visibility_off';
+            } else {
+                pwdInput.type = 'password';
+                icon.textContent = 'visibility';
+            }
+        }
+
+        // Custom checkbox logic
+        const checkbox = document.getElementById('remember-me');
+        const checkIcon = document.getElementById('check-icon');
+        if (checkbox && checkIcon) {
+            checkbox.addEventListener('change', (e) => {
+                checkIcon.style.opacity = e.target.checked ? '1' : '0';
+            });
+        }
+    </script>
 </body>
 </html>

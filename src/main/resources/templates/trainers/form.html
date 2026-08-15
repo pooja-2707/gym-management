@@ -2,55 +2,49 @@
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout}">
 <body>
 <div id="page-content">
-
-    <div class="top-header">
+    <div class="flex justify-between items-end mb-8">
         <div>
-            <h2 th:text="${trainer.id != null} ? 'Edit Trainer' : 'Add New Trainer'">Add Trainer</h2>
-            <span class="breadcrumb"><a th:href="@{/trainers}" class="text-decoration-none">Trainers</a> / Form</span>
+            <h2 class="font-headline-xl text-headline-xl text-primary" th:text="${trainer.id != null} ? 'Edit Trainer' : 'Add New Trainer'">Add Trainer</h2>
+            <p class="font-body-md text-body-md text-on-surface-variant mt-1">
+                <a th:href="@{/trainers}" class="text-secondary-fixed hover:text-secondary no-underline">Trainers</a> / Form
+            </p>
         </div>
     </div>
-
-    <div class="content-card" style="max-width: 600px;">
-        <div class="card-body">
-            <form th:action="@{/trainers/save}" th:object="${trainer}" method="post">
-                <input type="hidden" th:field="*{id}">
-
-                <div class="mb-3">
-                    <label class="form-label">Trainer Name <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" th:field="*{name}"
-                           th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''" placeholder="Full name">
-                    <div class="invalid-feedback" th:errors="*{name}">Error</div>
+    <div class="glass-panel rounded-xl p-8 max-w-[600px]">
+        <form th:action="@{/trainers/save}" th:object="${trainer}" method="post">
+            <input type="hidden" th:field="*{id}">
+            <div class="flex flex-col gap-6">
+                <div>
+                    <label class="glass-label">Trainer Name <span class="text-error">*</span></label>
+                    <input type="text" class="glass-input" th:field="*{name}" placeholder="Full name"
+                           th:classappend="${#fields.hasErrors('name')} ? 'border-error/50' : ''">
+                    <p class="text-error text-[12px] mt-1" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Error</p>
                 </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Phone Number <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" th:field="*{phone}"
-                           th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid' : ''" placeholder="Phone number">
-                    <div class="invalid-feedback" th:errors="*{phone}">Error</div>
+                <div>
+                    <label class="glass-label">Phone Number <span class="text-error">*</span></label>
+                    <input type="text" class="glass-input" th:field="*{phone}" placeholder="Phone number"
+                           th:classappend="${#fields.hasErrors('phone')} ? 'border-error/50' : ''">
+                    <p class="text-error text-[12px] mt-1" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}">Error</p>
                 </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Specialization <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" th:field="*{specialization}"
-                           th:classappend="${#fields.hasErrors('specialization')} ? 'is-invalid' : ''" placeholder="e.g. Cardio, Yoga, CrossFit">
-                    <div class="invalid-feedback" th:errors="*{specialization}">Error</div>
+                <div>
+                    <label class="glass-label">Specialization <span class="text-error">*</span></label>
+                    <input type="text" class="glass-input" th:field="*{specialization}" placeholder="e.g. Cardio, Yoga, CrossFit"
+                           th:classappend="${#fields.hasErrors('specialization')} ? 'border-error/50' : ''">
+                    <p class="text-error text-[12px] mt-1" th:if="${#fields.hasErrors('specialization')}" th:errors="*{specialization}">Error</p>
                 </div>
-
-                <div class="mb-4">
-                    <label class="form-label">Monthly Salary (₹) <span class="text-danger">*</span></label>
-                    <input type="number" step="0.01" class="form-control" th:field="*{salary}"
-                           th:classappend="${#fields.hasErrors('salary')} ? 'is-invalid' : ''" placeholder="e.g. 35000">
-                    <div class="invalid-feedback" th:errors="*{salary}">Error</div>
+                <div>
+                    <label class="glass-label">Monthly Salary (₹) <span class="text-error">*</span></label>
+                    <input type="number" step="0.01" class="glass-input" th:field="*{salary}" placeholder="e.g. 35000"
+                           th:classappend="${#fields.hasErrors('salary')} ? 'border-error/50' : ''">
+                    <p class="text-error text-[12px] mt-1" th:if="${#fields.hasErrors('salary')}" th:errors="*{salary}">Error</p>
                 </div>
-
-                <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i> Save Trainer</button>
-                    <a th:href="@{/trainers}" class="btn btn-secondary"><i class="bi bi-x-lg me-1"></i> Cancel</a>
-                </div>
-            </form>
-        </div>
+            </div>
+            <div class="flex gap-4 mt-8 pt-6 border-t border-white/10">
+                <button type="submit" class="btn-primary-neon"><span class="material-symbols-outlined text-[18px]">check</span> Save Trainer</button>
+                <a th:href="@{/trainers}" class="btn-ghost-neon no-underline"><span class="material-symbols-outlined text-[18px]">close</span> Cancel</a>
+            </div>
+        </form>
     </div>
-
 </div>
 </body>
 </html>

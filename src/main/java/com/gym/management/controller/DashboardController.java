@@ -29,6 +29,7 @@ public class DashboardController {
         model.addAttribute("activeMembers", subscriptionService.countByStatus("Active"));
         model.addAttribute("expiredMembers", subscriptionService.countByStatus("Expired"));
         model.addAttribute("monthlyRevenue", paymentService.getMonthlyRevenue());
+        model.addAttribute("totalRevenue", paymentService.getTotalRevenue());
 
         model.addAttribute("recentMembers", memberService.getRecentMembers());
         model.addAttribute("recentPayments", paymentService.getRecentPayments());

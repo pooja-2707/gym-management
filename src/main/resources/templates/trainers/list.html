@@ -2,60 +2,70 @@
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout}">
 <body>
 <div id="page-content">
-
-    <div class="top-header">
+    <!-- Page Title + Actions -->
+    <div class="flex justify-between items-end mb-8">
         <div>
-            <h2>Trainers</h2>
-            <span class="breadcrumb">Manage gym trainers & specializations</span>
+            <h2 class="font-headline-xl text-headline-xl text-primary">Trainers Directory</h2>
+            <p class="font-body-md text-body-md text-on-surface-variant mt-1">Manage gym trainers &amp; specializations.</p>
         </div>
-        <a th:href="@{/trainers/add}" class="btn btn-primary">
-            <i class="bi bi-plus-lg me-1"></i> Add Trainer
+        <a th:href="@{/trainers/add}" class="btn-primary-neon no-underline">
+            <span class="material-symbols-outlined text-[18px]">person_add</span>
+            Add Trainer
         </a>
     </div>
 
-    <div class="content-card">
-        <div class="card-body">
-            <div th:if="${#lists.isEmpty(trainers)}" class="text-center py-4 text-muted">
-                No trainers registered yet.
+    <!-- Empty State -->
+    <div th:if="${#lists.isEmpty(trainers)}" class="glass-panel rounded-xl text-center py-16">
+        <span class="material-symbols-outlined text-[64px] text-on-surface-variant/20 mb-4">fitness_center</span>
+        <p class="font-body-md text-on-surface-variant">No trainers registered yet.</p>
+        <a th:href="@{/trainers/add}" class="btn-primary-neon no-underline mt-4 inline-flex">
+            <span class="material-symbols-outlined text-[18px]">person_add</span>
+            Add First Trainer
+        </a>
+    </div>
+
+    <!-- Trainers Grid -->
+    <div th:unless="${#lists.isEmpty(trainers)}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+        <div th:each="trainer, iterStat : ${trainers}" class="glass-panel rounded-xl p-6 transition-all duration-300 hover:border-secondary-fixed/30 hover:shadow-[0px_0px_40px_rgba(0,219,233,0.1)] group relative overflow-hidden">
+            <!-- Glow -->
+            <div class="absolute top-0 right-0 w-24 h-24 bg-secondary-fixed/5 rounded-full blur-2xl -mr-12 -mt-12 group-hover:bg-secondary-fixed/15 transition-all"></div>
+
+            <div class="flex items-start gap-4 mb-4 relative z-10">
+                <!-- Avatar -->
+                <div class="w-14 h-14 rounded-full bg-surface-container-high border border-white/20 flex items-center justify-center text-primary font-headline-md shrink-0">
+                    <span th:text="${#strings.substring(trainer.name, 0, 1)}">A</span>
+                </div>
+                <div class="flex-1">
+                    <h3 class="font-headline-md text-[20px] text-primary font-bold" th:text="${trainer.name}">Alex Paul</h3>
+                    <span class="inline-flex items-center gap-1 bg-secondary-fixed/10 text-secondary-fixed px-2 py-0.5 rounded-full font-label-sm text-label-sm border border-secondary-fixed/20 mt-1" th:text="${trainer.specialization}">Bodybuilding</span>
+                </div>
             </div>
 
-            <div th:unless="${#lists.isEmpty(trainers)}" class="table-responsive">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Name</th>
-                            <th>Phone</th>
-                            <th>Specialization</th>
-                            <th>Salary (Monthly)</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="trainer, iterStat : ${trainers}">
-                            <td th:text="${iterStat.count}">1</td>
-                            <td class="fw-semibold" th:text="${trainer.name}">Alex Paul</td>
-                            <td th:text="${trainer.phone}">9876543210</td>
-                            <td>
-                                <span class="badge bg-primary bg-opacity-10 text-primary" th:text="${trainer.specialization}">Bodybuilding</span>
-                            </td>
-                            <td>₹<span th:text="${#numbers.formatDecimal(trainer.salary, 1, 0)}">30000</span></td>
-                            <td>
-                                <a th:href="@{/trainers/edit/{id}(id=${trainer.id})}" class="btn btn-sm btn-warning me-1">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
-                                <a th:href="@{/trainers/delete/{id}(id=${trainer.id})}" class="btn btn-sm btn-danger"
-                                   onclick="return confirm('Delete this trainer?')">
-                                    <i class="bi bi-trash"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="flex justify-between items-center mb-4 relative z-10">
+                <div>
+                    <p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Phone</p>
+                    <p class="font-label-md text-label-md text-primary" th:text="${trainer.phone}">9876543210</p>
+                </div>
+                <div class="text-right">
+                    <p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Salary</p>
+                    <p class="font-label-md text-label-md text-primary-fixed font-bold">₹<span th:text="${#numbers.formatDecimal(trainer.salary, 1, 0)}">30000</span></p>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex gap-2 pt-4 border-t border-white/10 relative z-10">
+                <a th:href="@{/trainers/edit/{id}(id=${trainer.id})}" class="btn-ghost-neon no-underline text-[12px] flex-1 justify-center">
+                    <span class="material-symbols-outlined text-[16px]">edit</span>
+                    Edit
+                </a>
+                <a th:href="@{/trainers/delete/{id}(id=${trainer.id})}" class="btn-danger-neon no-underline text-[12px] flex-1 justify-center"
+                   onclick="return confirm('Delete this trainer?')">
+                    <span class="material-symbols-outlined text-[16px]">delete</span>
+                    Delete
+                </a>
             </div>
         </div>
     </div>
-
 </div>
 </body>
 </html>

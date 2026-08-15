@@ -2,97 +2,287 @@
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout}">
 <body>
 <div id="page-content">
+    <!-- Page Title -->
+    <div class="mb-8">
+        <h2 class="font-headline-xl text-headline-xl text-primary font-bold tracking-tight">Overview</h2>
+        <p class="font-body-md text-body-md text-on-surface-variant mt-1">Live metrics and facility status.</p>
+    </div>
 
-  <div class="page-head">
-    <div class="eyebrow">Front desk overview</div>
-    <h1>Dashboard</h1>
-  </div>
-
-  <div class="plates">
-    <div class="plate-card">
-      <div class="plate red"><span>45kg</span></div>
-      <div>
-        <div class="num" th:text="${totalMembers}">0</div>
-        <div class="label">Total Members</div>
-      </div>
-    </div>
-    <div class="plate-card">
-      <div class="plate blue"><span>20kg</span></div>
-      <div>
-        <div class="num" th:text="${activeMembers}">0</div>
-        <div class="label">Active Members</div>
-      </div>
-    </div>
-    <div class="plate-card">
-      <div class="plate yellow"><span>10kg</span></div>
-      <div>
-        <div class="num" th:text="${expiredMembers}">0</div>
-        <div class="label">Expired Members</div>
-      </div>
-    </div>
-    <div class="plate-card hero">
-      <div class="plate green"><span>5kg</span></div>
-      <div>
-        <div class="num">₹<span th:text="${#numbers.formatDecimal(monthlyRevenue ?: 0, 1, 0)}">0</span></div>
-        <div class="label">Monthly Revenue</div>
-      </div>
-      <div class="trend">— flat</div>
-    </div>
-  </div>
-
-  <div class="panels">
-    <!-- Revenue Bar Chart -->
-    <div class="panel">
-      <div class="panel-head">
-        <h2>📈 Revenue, last 6 weeks</h2>
-        <a th:href="@{/reports}">View report →</a>
-      </div>
-      <div class="panel-body">
-        <div class="chart-row">
-          <div th:each="rev, iterStat : ${weeklyRevenue}" 
-               class="bar" 
-               th:style="'height:' + (${maxWeeklyRevenue > 0 ? (rev / maxWeeklyRevenue * 80 + 10) : 6} + '%')"
-               th:title="'W' + ${iterStat.count} + ': ₹' + ${#numbers.formatDecimal(rev, 1, 0)}">
-            <span th:text="'W' + ${iterStat.count}">W1</span>
-          </div>
+    <!-- Metric Cards (Bento Grid Style) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter mb-gutter">
+        <!-- Card 1: Members -->
+        <div class="glass-panel p-6 rounded-xl flex flex-col justify-between hover:glass-panel-active transition-all duration-300 group cursor-default">
+            <div class="flex justify-between items-start mb-4">
+                <div class="p-2 bg-white/5 rounded-lg border border-white/10 group-hover:border-primary-fixed/50 transition-colors">
+                    <span class="material-symbols-outlined text-primary-fixed">group</span>
+                </div>
+                <span class="flex items-center text-primary-fixed font-label-sm text-label-sm gap-1 bg-primary-fixed/10 px-2 py-1 rounded-full border border-primary-fixed/20">
+                    <span class="material-symbols-outlined text-[14px]">arrow_upward</span> 12%
+                </span>
+            </div>
+            <div>
+                <p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-1">Total Members</p>
+                <p class="font-headline-xl text-headline-xl text-primary font-bold" th:text="${totalMembers} ?: '0'">1,482</p>
+            </div>
         </div>
-      </div>
+        <!-- Card 2: Active Members -->
+        <div class="glass-panel p-6 rounded-xl flex flex-col justify-between hover:glass-panel-secondary-active transition-all duration-300 group cursor-default relative overflow-hidden">
+            <!-- Progress Bar Background -->
+            <div class="absolute bottom-0 left-0 h-1 bg-secondary-fixed/20 w-full">
+                <div class="h-full bg-secondary-fixed shadow-[0_0_10px_rgba(0,219,233,0.8)]" style="width: 78%"></div>
+            </div>
+            <div class="flex justify-between items-start mb-4">
+                <div class="p-2 bg-white/5 rounded-lg border border-white/10 group-hover:border-secondary-fixed/50 transition-colors">
+                    <span class="material-symbols-outlined text-secondary-fixed">sensor_door</span>
+                </div>
+                <span class="flex items-center text-secondary-fixed font-label-sm text-label-sm gap-1 bg-secondary-fixed/10 px-2 py-1 rounded-full border border-secondary-fixed/20">
+                    Live
+                </span>
+            </div>
+            <div>
+                <p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-1">Active Members</p>
+                <p class="font-headline-xl text-headline-xl text-primary font-bold">
+                    <span th:text="${activeMembers} ?: '0'">78</span>
+                </p>
+            </div>
+        </div>
+        <!-- Card 3: Revenue -->
+        <div class="glass-panel p-6 rounded-xl flex flex-col justify-between hover:glass-panel-active transition-all duration-300 group cursor-default">
+            <div class="flex justify-between items-start mb-4">
+                <div class="p-2 bg-white/5 rounded-lg border border-white/10 group-hover:border-primary-fixed/50 transition-colors">
+                    <span class="material-symbols-outlined text-primary-fixed">payments</span>
+                </div>
+                <span class="flex items-center text-primary-fixed font-label-sm text-label-sm gap-1 bg-primary-fixed/10 px-2 py-1 rounded-full border border-primary-fixed/20">
+                    <span class="material-symbols-outlined text-[14px]">arrow_upward</span> 4.3%
+                </span>
+            </div>
+            <div>
+                <p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-1">Monthly Revenue</p>
+                <p class="font-headline-xl text-headline-xl text-primary font-bold">
+                    <span class="text-headline-md text-on-surface-variant">₹</span><span th:text="${monthlyRevenue != null ? #numbers.formatDecimal(monthlyRevenue, 1, 'COMMA', 0, 'POINT') : '0'}">34,850</span>
+                </p>
+            </div>
+        </div>
+        <!-- Card 4: Attendance -->
+        <div class="glass-panel p-6 rounded-xl flex flex-col justify-between hover:glass-panel-secondary-active transition-all duration-300 group cursor-default">
+            <div class="flex justify-between items-start mb-4">
+                <div class="p-2 bg-white/5 rounded-lg border border-white/10 group-hover:border-secondary-fixed/50 transition-colors">
+                    <span class="material-symbols-outlined text-secondary-fixed">how_to_reg</span>
+                </div>
+                <span class="flex items-center text-error font-label-sm text-label-sm gap-1 bg-error/10 px-2 py-1 rounded-full border border-error/20">
+                    <span class="material-symbols-outlined text-[14px]">arrow_downward</span> 2%
+                </span>
+            </div>
+            <div>
+                <p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-1">Avg Attendance</p>
+                <p class="font-headline-xl text-headline-xl text-primary font-bold">91<span class="text-headline-md text-on-surface-variant">%</span></p>
+            </div>
+        </div>
     </div>
 
-    <!-- Recent Members -->
-    <div class="panel">
-      <div class="panel-head">
-        <h2>Recent Members</h2>
-        <a th:href="@{/members}">View all →</a>
-      </div>
-      <div class="panel-body">
-        <div th:if="${#lists.isEmpty(recentMembers)}" class="empty">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-          <p>No members yet — the roster's empty.</p>
-          <a th:href="@{/members/add}" class="btn-add">+ Add first member</a>
+    <!-- Complex Layout Grid: Chart + Recent Members -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+        <!-- Main Chart Area (Spans 2 columns) -->
+        <div class="lg:col-span-2 glass-panel rounded-xl p-6 flex flex-col">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h3 class="font-headline-md text-headline-md text-primary">Performance Trends</h3>
+                    <p class="font-label-sm text-label-sm text-on-surface-variant">Revenue vs. Attendance over 30 days</p>
+                </div>
+                <!-- Pill Selector -->
+                <div class="flex bg-white/5 rounded-full p-1 border border-white/10">
+                    <button class="px-4 py-1 rounded-full bg-white/10 text-primary font-label-sm text-label-sm shadow-sm transition-all">30D</button>
+                    <button class="px-4 py-1 rounded-full text-on-surface-variant hover:text-primary font-label-sm text-label-sm transition-all">90D</button>
+                    <button class="px-4 py-1 rounded-full text-on-surface-variant hover:text-primary font-label-sm text-label-sm transition-all">1Y</button>
+                </div>
+            </div>
+            <!-- Chart Canvas Container -->
+            <div class="flex-1 w-full min-h-[300px] relative">
+                <canvas id="performanceChart" class="w-full h-full"></canvas>
+            </div>
         </div>
-        <div th:unless="${#lists.isEmpty(recentMembers)}" class="table-responsive">
-          <table class="table-board">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Phone</th>
-                <th>Joined</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr th:each="m : ${recentMembers}">
-                <td style="font-weight: 600;" th:text="${m.name}">John Doe</td>
-                <td style="font-family: 'JetBrains Mono', monospace;" th:text="${m.phone}">9876543210</td>
-                <td style="font-family: 'JetBrains Mono', monospace;" th:text="${#temporals.format(m.joinDate, 'dd-MMM-yyyy')}">01-Jan-2026</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
 
+        <!-- Recent Members Feed (Spans 1 column) -->
+        <div class="glass-panel rounded-xl p-6 flex flex-col h-[400px]">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="font-headline-md text-headline-md text-primary flex items-center gap-2">
+                    Recent Members
+                    <span class="live-dot"></span>
+                </h3>
+                <a th:href="@{/members}" class="text-on-surface-variant hover:text-primary transition-colors no-underline">
+                    <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+                </a>
+            </div>
+            <div class="flex-1 overflow-y-auto pr-2 space-y-3">
+                <!-- Member Rows -->
+                <div th:each="member : ${recentMembers}" class="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-transparent hover:border-white/10 transition-colors">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-surface-container-high border border-white/20 flex items-center justify-center text-primary font-label-md">
+                            <span th:text="${#strings.substring(member.name, 0, 1)}">M</span>
+                        </div>
+                        <div>
+                            <p class="font-label-md text-label-md text-primary" th:text="${member.name}">Marcus R.</p>
+                            <p class="font-label-sm text-label-sm text-on-surface-variant" th:text="${member.phone}">+1 555-0192</p>
+                        </div>
+                    </div>
+                    <span class="font-label-sm text-label-sm text-on-surface-variant" th:text="${#temporals.format(member.joinDate, 'dd MMM')}">Just now</span>
+                </div>
+                <div th:if="${#lists.isEmpty(recentMembers)}" class="flex items-center justify-center h-full">
+                    <p class="font-label-sm text-label-sm text-on-surface-variant">No recent members found.</p>
+                </div>
+            </div>
+            <a th:href="@{/members}" class="w-full mt-4 py-2 text-center text-secondary-fixed font-label-sm text-label-sm hover:bg-white/5 rounded-lg transition-colors border border-dashed border-white/10 block no-underline">
+                View Full Directory
+            </a>
+        </div>
+    </div>
+
+    <!-- Chart.js Script inside #page-content so Thymeleaf layout inserts it -->
+    <script th:inline="javascript">
+        (function() {
+            function renderPerformanceChart() {
+                const canvas = document.getElementById('performanceChart');
+                if (!canvas) return;
+
+                if (window.myDashboardChart) {
+                    window.myDashboardChart.destroy();
+                }
+
+                const ctx = canvas.getContext('2d');
+
+                const gradientRevenue = ctx.createLinearGradient(0, 0, 0, 300);
+                gradientRevenue.addColorStop(0, 'rgba(0, 219, 233, 0.4)');
+                gradientRevenue.addColorStop(1, 'rgba(0, 219, 233, 0.0)');
+
+                const gradientAttendance = ctx.createLinearGradient(0, 0, 0, 300);
+                gradientAttendance.addColorStop(0, 'rgba(204, 255, 0, 0.4)');
+                gradientAttendance.addColorStop(1, 'rgba(204, 255, 0, 0.0)');
+
+                const weeklyRevenue = /*[[${weeklyRevenue}]]*/ [1500, 4000, 14000, 7500, 1500, 29000];
+                const labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6 (Current)'];
+                const revenueData = (weeklyRevenue && weeklyRevenue.length >= 6) ? weeklyRevenue : [1500, 4000, 14000, 7500, 1500, 29000];
+                const attendanceData = [12, 18, 25, 30, 38, 45];
+
+                window.myDashboardChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Revenue (₹)',
+                                data: revenueData,
+                                borderColor: '#00dbe9',
+                                backgroundColor: gradientRevenue,
+                                borderWidth: 2.5,
+                                tension: 0.4,
+                                fill: true,
+                                pointBackgroundColor: '#131313',
+                                pointBorderColor: '#00dbe9',
+                                pointBorderWidth: 2,
+                                pointRadius: 4,
+                                pointHoverRadius: 6,
+                                yAxisID: 'y'
+                            },
+                            {
+                                label: 'Attendance Check-ins',
+                                data: attendanceData,
+                                borderColor: '#ccff00',
+                                backgroundColor: gradientAttendance,
+                                borderWidth: 2.5,
+                                tension: 0.4,
+                                fill: true,
+                                pointBackgroundColor: '#131313',
+                                pointBorderColor: '#ccff00',
+                                pointBorderWidth: 2,
+                                pointRadius: 4,
+                                pointHoverRadius: 6,
+                                yAxisID: 'y1'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false,
+                        },
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top',
+                                align: 'end',
+                                labels: {
+                                    color: '#e5e2e1',
+                                    font: { family: 'Inter', size: 12 },
+                                    usePointStyle: true,
+                                    boxWidth: 8
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(20, 20, 20, 0.95)',
+                                titleColor: '#ffffff',
+                                bodyColor: '#e5e2e1',
+                                titleFont: { family: 'Inter', size: 13, weight: '600' },
+                                bodyFont: { family: 'Inter', size: 12 },
+                                padding: 12,
+                                borderColor: 'rgba(255,255,255,0.15)',
+                                borderWidth: 1,
+                                cornerRadius: 8
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.05)',
+                                    drawBorder: false,
+                                },
+                                ticks: {
+                                    color: '#8e9379',
+                                    font: { family: 'Inter', size: 12 }
+                                }
+                            },
+                            y: {
+                                type: 'linear',
+                                display: true,
+                                position: 'left',
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.05)',
+                                    drawBorder: false,
+                                },
+                                ticks: {
+                                    color: '#00dbe9',
+                                    font: { family: 'Inter', size: 11 },
+                                    callback: function(value) {
+                                        if (value >= 1000) return '₹' + (value / 1000) + 'k';
+                                        return '₹' + value;
+                                    }
+                                }
+                            },
+                            y1: {
+                                type: 'linear',
+                                display: true,
+                                position: 'right',
+                                grid: {
+                                    drawOnChartArea: false,
+                                },
+                                ticks: {
+                                    color: '#ccff00',
+                                    font: { family: 'Inter', size: 11 }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', renderPerformanceChart);
+            } else {
+                renderPerformanceChart();
+            }
+        })();
+    </script>
 </div>
 </body>
 </html>

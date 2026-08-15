@@ -39,13 +39,18 @@ public class ReportController {
             endDate = LocalDate.now();
         }
 
+        var activeSubs = subscriptionService.getSubscriptionsByStatus("Active");
+        var expiredSubs = subscriptionService.getSubscriptionsByStatus("Expired");
+
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);
         model.addAttribute("totalRevenue", paymentService.getTotalRevenue());
         model.addAttribute("monthlyRevenue", paymentService.getMonthlyRevenue());
         model.addAttribute("payments", paymentService.getPaymentsBetweenDates(startDate, endDate));
-        model.addAttribute("activeSubscriptions", subscriptionService.getSubscriptionsByStatus("Active"));
-        model.addAttribute("expiredSubscriptions", subscriptionService.getSubscriptionsByStatus("Expired"));
+        model.addAttribute("activeSubscriptions", activeSubs);
+        model.addAttribute("expiredSubscriptions", expiredSubs);
+        model.addAttribute("activeCount", activeSubs != null ? activeSubs.size() : 0);
+        model.addAttribute("expiredCount", expiredSubs != null ? expiredSubs.size() : 0);
 
         model.addAttribute("pageTitle", "Reports");
         model.addAttribute("activePage", "reports");
